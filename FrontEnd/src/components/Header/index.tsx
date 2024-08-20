@@ -4,6 +4,7 @@ import {
   faXTwitter,
 } from "@fortawesome/free-brands-svg-icons";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { faUser } from "@fortawesome/free-regular-svg-icons";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -12,8 +13,8 @@ function Header() {
     <header className="">
       <div className="bg-gray-100">
         <div className="container mx-auto">
-          <header className="flex justify-between items-center py-2 text-xs text-primary">
-            <div className="py-2">
+          <header className="flex justify-between items-center py-1 text-xs text-primary">
+            <div className="">
               <a href="tel: +(000)999-898-99">(000)999-898-999</a>
               <span> | </span>
               <a href="mailto:info@trisog.com">info@trisog.com</a>
@@ -24,13 +25,13 @@ function Header() {
                   <FontAwesomeIcon icon={faXTwitter} />
                 </a>
                 <a
-                  href="https://www.x.com"
+                  href="https://www.google.com.br/"
                   target="_blank"
                   className="text-primary"
                 >
                   <FontAwesomeIcon icon={faGoogle} />
                 </a>
-                <a href="https://www.x.com" target="_blank">
+                <a href="https://br.pinterest.com/" target="_blank">
                   <FontAwesomeIcon icon={faPinterest} />
                 </a>
               </div>
@@ -46,49 +47,54 @@ function Header() {
       </div>
       <header>
         <div className="container mx-auto">
-          <div className="flex justify-between items-center">
-            <nav className="flex w-full bg-red-50 ">
-              <ul className="lg:flex flex-1 justify-start md:hidden">
-                <li>
-                  <a href="#">
-                    <img src="../../assets/logo.png" alt="logo" />
-                  </a>
-                </li>
-                <li>
-                  <a href="/">Home</a>
-                </li>
-                <li>
-                  <a href="#">About</a>
-                </li>
-                <li>
-                  <a href="#">Tours</a>
-                </li>
-                <li>
-                  <a href="#">Destination</a>
-                </li>
-                <li>
-                  <a href="#">Blog</a>
-                </li>
-                <li>
-                  <a href="#">Pages</a>
-                </li>
-                <li>
-                  <a href="#">Contact</a>
-                </li>
-              </ul>
-            </nav>
-            <nav className="">
-              <ul className="flex">
+          <div className="flex justify-between items-center py-6">
+            <div className="flex justify-between items-center w-[42rem] ">
+              <div className="mr-8">
+                <a href="#">
+                  <img
+                    className=""
+                    src="https://firebasestorage.googleapis.com/v0/b/challenge-compass-d71cc.appspot.com/o/images%2Flogo.png?alt=media&token=3b23844f-0714-499d-a0ae-4e714e8d58ec"
+                    alt="logo"
+                  />
+                </a>
+              </div>
+              <nav className="flex w-full h-full items-center">
+                <ul className="lg:flex flex-1 justify-between text-primary  md:hidden">
+                  <li className="hover:text-secondary">
+                    <a href="/">Home</a>
+                  </li>
+                  <li className="hover:text-secondary">
+                    <a href="#">About</a>
+                  </li>
+                  <li className="hover:text-secondary">
+                    <a href="#">Tours</a>
+                  </li>
+                  <li className="hover:text-secondary">
+                    <a href="#">Destination</a>
+                  </li>
+                  <li className="hover:text-secondary">
+                    <a href="#">Blog</a>
+                  </li>
+                  <li className="hover:text-secondary">
+                    <a href="#">Pages</a>
+                  </li>
+                  <li className="hover:text-secondary">
+                    <a href="#">Contact</a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+            <nav className="w-36">
+              <ul className="flex items-center justify-between text-primary ">
                 <li>
                   <a href="#">
                     <FontAwesomeIcon icon={faMagnifyingGlass} />
                   </a>
                 </li>
                 <li>
-                  <a href="#">Login</a>
-                </li>
-                <li>
-                  <a href="#">Register</a>
+                  <a href="#" className="font-bold text-sm">
+                    <FontAwesomeIcon icon={faUser} /> Login / Signup
+                  </a>
                 </li>
               </ul>
             </nav>
