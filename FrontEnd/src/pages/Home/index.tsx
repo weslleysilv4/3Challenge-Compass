@@ -11,23 +11,24 @@ import Card from "../../components/Card";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import TravelCounters from "../../components/TravelCounters";
 
 function Home() {
   return (
     <>
       <Header />
-      <section className=" h-[527px] bg-center bg-cover bg-[url('https://firebasestorage.googleapis.com/v0/b/challenge-compass-d71cc.appspot.com/o/images%2Fian-dooley-DuBNA1QMpPA-unsplash.jpg?alt=media&token=360db849-f055-4194-8896-7c8ee308c4a1')]">
+      <section className=" h-[527px] bg-center bg-cover bg-[url('https://firebasestorage.googleapis.com/v0/b/challenge-compass-d71cc.appspot.com/o/images%2Fcapa.png?alt=media&token=6cbbae71-fd81-43c5-84a9-13941ba49a4e')]">
         <div className="container mx-auto">
           <main className="relative w-full h-[527px] flex flex-col">
             <div className="flex justify-center items-center h-full">
               <div className="text-center">
-                <h2 className="text-2xl font-secondary text-secondary mb-4">
+                <h2 className="text-3xl font-secondary text-secondary mb-4">
                   Save 15% off in Worldwide
                 </h2>
-                <h1 className="text-4xl font-bold text-white mb-2">
+                <h1 className="text-5xl font-bold text-white mb-2">
                   Travel & Adventures
                 </h1>
-                <p className="text-white">
+                <p className="text-white font-semibold">
                   Find awesome hotel, tour, car and activities in London
                 </p>
               </div>
@@ -98,13 +99,13 @@ function Home() {
           </main>
           <section className="flex flex-col gap-6 items-center justify-center h-[780px]">
             <Titles tittle="Tours" />
-            <h1 className="text-primary font-bold text-4xl">
+            <h1 className="text-primary font-bold text-4xl mb-10">
               Most Popular Tours
             </h1>
-            <div className="w-full mx-auto">
+            <div className="w-full mx-auto ">
               <Slider
                 infinite={false}
-                dotsClass="slick-dots -bottom-14"
+                dotsClass="slick-dots -bottom-20"
                 slidesToShow={4}
                 arrows={false}
                 dots
@@ -168,7 +169,12 @@ function Home() {
             </div>
           </section>
           <hr />
-          <section className="flex flex-col gap-6 items-center justify-center pt-20 h-[780px]"></section>
+          <section className="flex flex-row items-center justify-between h-[190px] ">
+            <TravelCounters counter="120+" label="Total Destination" />
+            <TravelCounters counter="500+" label="Travel Package" />
+            <TravelCounters counter="12k+" label="Total Travelers" />
+            <TravelCounters counter="7k+" label="Positive Reviews" />
+          </section>
         </div>
       </section>
     </>
