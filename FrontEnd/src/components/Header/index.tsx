@@ -7,6 +7,7 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Logo from "../Logo";
 
 function Header() {
   return (
@@ -51,11 +52,7 @@ function Header() {
             <div className="flex justify-between items-center w-[42rem] ">
               <div className="mr-8">
                 <a href="#">
-                  <img
-                    className=""
-                    src="https://firebasestorage.googleapis.com/v0/b/challenge-compass-d71cc.appspot.com/o/images%2Flogo.png?alt=media&token=3b23844f-0714-499d-a0ae-4e714e8d58ec"
-                    alt="logo"
-                  />
+                  <Logo />
                 </a>
               </div>
               <nav className="flex w-full h-full items-center">
