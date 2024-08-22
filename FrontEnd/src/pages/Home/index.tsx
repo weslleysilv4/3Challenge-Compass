@@ -6,6 +6,11 @@ import {
   faPaperPlane,
   faUser,
 } from "@fortawesome/free-regular-svg-icons";
+import Titles from "../../components/Titles";
+import Card from "../../components/Card";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 function Home() {
   return (
@@ -33,10 +38,7 @@ function Home() {
                   Destination
                 </label>
                 <div className="flex gap-2 items-center outline-none border-2 border-gray-100 rounded-md h-10 px-4">
-                  <FontAwesomeIcon
-                    icon={faPaperPlane}
-                    className="text-primary"
-                  />
+                  <FontAwesomeIcon icon={faPaperPlane} />
                   <input
                     type="text"
                     placeholder="Where to go?"
@@ -49,7 +51,7 @@ function Home() {
                   Type
                 </label>
                 <div className="flex gap-2 items-center outline-none border-2 border-gray-100 rounded-md h-10 px-4">
-                  <FontAwesomeIcon icon={faFlag} className="text-primary" />
+                  <FontAwesomeIcon icon={faFlag} />
                   <select defaultValue="" className="text-gray-300">
                     <option value="" disabled>
                       Activity
@@ -94,6 +96,79 @@ function Home() {
               </button>
             </form>
           </main>
+          <section className="flex flex-col gap-6 items-center justify-center h-[780px]">
+            <Titles tittle="Tours" />
+            <h1 className="text-primary font-bold text-4xl">
+              Most Popular Tours
+            </h1>
+            <div className="w-full mx-auto">
+              <Slider
+                infinite={false}
+                dotsClass="slick-dots -bottom-14"
+                slidesToShow={4}
+                arrows={false}
+                dots
+                autoplay
+              >
+                <Card
+                  imageSrc="https://elquarto.com/blog/wp-content/uploads/2022/10/Budapeste.jpg" // Replace with your image source
+                  location="Budapest, Hungary"
+                  title="Wonders of the West Coast & Kimberley"
+                  rating={4.8}
+                  reviewsCount={15}
+                  duration="7 days"
+                  price={520}
+                />
+                <Card
+                  imageSrc="https://elquarto.com/blog/wp-content/uploads/2022/10/Budapeste.jpg" // Replace with your image source
+                  location="Budapest, Hungary"
+                  title="Wonders of the West Coast & Kimberley"
+                  rating={4.8}
+                  reviewsCount={15}
+                  duration="7 days"
+                  price={520}
+                />
+                <Card
+                  imageSrc="https://elquarto.com/blog/wp-content/uploads/2022/10/Budapeste.jpg" // Replace with your image source
+                  location="Budapest, Hungary"
+                  title="Wonders of the West Coast & Kimberley"
+                  rating={4.8}
+                  reviewsCount={15}
+                  duration="7 days"
+                  price={520}
+                />
+                <Card
+                  imageSrc="https://elquarto.com/blog/wp-content/uploads/2022/10/Budapeste.jpg" // Replace with your image source
+                  location="Budapest, Hungary"
+                  title="Wonders of the West Coast & Kimberley"
+                  rating={4.8}
+                  reviewsCount={15}
+                  duration="7 days"
+                  price={520}
+                />
+                <Card
+                  imageSrc="https://elquarto.com/blog/wp-content/uploads/2022/10/Budapeste.jpg" // Replace with your image source
+                  location="Budapest, Hungary"
+                  title="Wonders of the West Coast & Kimberley"
+                  rating={4.8}
+                  reviewsCount={15}
+                  duration="7 days"
+                  price={520}
+                />
+                <Card
+                  imageSrc="https://elquarto.com/blog/wp-content/uploads/2022/10/Budapeste.jpg" // Replace with your image source
+                  location="Budapest, Hungary"
+                  title="Wonders of the West Coast & Kimberley"
+                  rating={4.8}
+                  reviewsCount={15}
+                  duration="7 days"
+                  price={520}
+                />
+              </Slider>
+            </div>
+          </section>
+          <hr />
+          <section className="flex flex-col gap-6 items-center justify-center pt-20 h-[780px]"></section>
         </div>
       </section>
     </>
