@@ -9,10 +9,9 @@ import {
 import Titles from "../../components/Titles";
 import Card from "../../components/Card";
 import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import TravelCounters from "../../components/TravelCounters";
 import ThirdSection from "./ThidSection";
+import FourthSection from "./FourthSection";
 
 function Home() {
   return (
@@ -265,6 +264,7 @@ function Home() {
         </div>
       </section>
       <ThirdSection />
+      <FourthSection />
     </div>
   );
 }
