@@ -15,7 +15,7 @@ function Footer() {
           <main className="h-[242px] flex items-center justify-center gap-20 ">
             <aside className="text-white w-1/4 l h-full flex flex-col gap-5 border-r-2">
               <Logo variant="secondary" />
-              <span className="font-secondary text-white">N eed any help?</span>
+              <span className="font-secondary text-white">Need any help?</span>
               <h6 className="font-bold text-lg">
                 Call Us:{" "}
                 <a href="tel:+88812345678" className="text-secondary">

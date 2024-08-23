@@ -1,59 +1,91 @@
-import Titles from "../../../components/Titles";
+import { faCirclePlay, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faQuoteRight } from "@fortawesome/free-solid-svg-icons";
-import Quote from "../../../components/Quote";
+import React from "react";
 import Slider from "react-slick";
+import CardTourType from "../../../components/CardTourType";
+import Titles from "../../../components/Titles";
 
 function FourthSection() {
   return (
-    <section className="bg-[#F7F8FA]">
+    <section>
       <div className="container mx-auto">
-        <main className="h-[601px] flex items-center justify-center gap-40">
-          <aside>
-            <figure>
-              <img
-                src="https://firebasestorage.googleapis.com/v0/b/challenge-compass-d71cc.appspot.com/o/images%2FPhotoDump.png?alt=media&token=ad38c77f-a536-4731-a0a2-f0850588c0fa"
-                alt=""
-              />
-            </figure>
-          </aside>
-          <aside className="flex flex-col items-center">
-            <Titles title="Testimonials" position="center" />
-            <h2 className="text-primary font-bold text-4xl">
-              What Travelers Say
-            </h2>
-            <FontAwesomeIcon
-              icon={faQuoteRight}
-              className="text-4xl text-secondary mt-14"
-            />
-            <div className="w-[482px]">
-              <Slider
-                infinite={false}
-                dots
-                dotsClass="slick-dots slick-thumb"
-                arrows={false}
-                speed={500}
-                slidesToShow={1}
-              >
-                <Quote
-                  quote="The UI designs he crafted are top-notch, and the design system he integrated allows for straight forward fixes and bulk updates throughout almost every area of the app."
-                  author="Molie Rosa"
-                  occupation="Photographer"
+        <section className="h-[1235px] flex flex-col  gap-20 items-center justify-center ">
+          <main className="flex flex-row justify-center items-center h-[526px] w-full gap-32">
+            <div className="w-[569px] h-full relative">
+              <figure className="-rotate-12 -z-10">
+                <img
+                  src="https://firebasestorage.googleapis.com/v0/b/challenge-compass-d71cc.appspot.com/o/images%2Fjake-blucker-tMzCrBkM99Y-unsplash.jpg?alt=media&token=f3e7ec6d-f8d9-429c-a4fd-c99d501158dc"
+                  alt=""
+                  className="h-[375px] w-[334px] object-cover"
                 />
-                <Quote
-                  quote="The UI designs he crafted are top-notch, and the design system he integrated allows for straight forward fixes and bulk updates throughout almost every area of the app."
-                  author="Molie Rosa"
-                  occupation="Photographer"
+              </figure>
+              <figure className="z-10 absolute top-28 right-0 ">
+                <img
+                  src="https://firebasestorage.googleapis.com/v0/b/challenge-compass-d71cc.appspot.com/o/images%2Fjulentto-photography-CIuakYIjadc-unsplash.jpg?alt=media&token=ba8043ab-30ba-4174-8600-02eb388a2e5d"
+                  alt=""
+                  className="h-[424px] w-[334px] object-cover"
                 />
-                <Quote
-                  quote="The UI designs he crafted are top-notch, and the design system he integrated allows for straight forward fixes and bulk updates throughout almost every area of the app."
-                  author="Molie Rosa"
-                  occupation="Photographer"
-                />
-              </Slider>
+              </figure>
+              <button className="absolute bottom-8 text-2xl left-32 z-20 font-secondary border-2 border-white bg-secondary text-white h-[77px] w-[280px] hover:bg-primary ">
+                <FontAwesomeIcon icon={faCirclePlay} /> Watch Now
+              </button>
             </div>
-          </aside>
-        </main>
+            <aside className="w-[364px] flex flex-col gap-6">
+              <Titles title="Why Choose Us" position="left" />
+              <h2 className="text-primary font-bold text-4xl">
+                Our Experiences Meet High Quality Standards
+              </h2>
+              <span>
+                Holisticly optimize proactive strategic theme areas rather than
+                effective manufactured products create.
+              </span>
+              <div className="grid grid-cols-2 gap-2">
+                <span className="font-bold">
+                  <FontAwesomeIcon icon={faCheck} className="text-secondary" />{" "}
+                  Travel Plan
+                </span>
+                <span className="font-bold">
+                  <FontAwesomeIcon icon={faCheck} className="text-secondary" />{" "}
+                  Cheap Rates
+                </span>
+                <span className="font-bold">
+                  <FontAwesomeIcon icon={faCheck} className="text-secondary" />{" "}
+                  Hand-picked Tour
+                </span>
+                <span className="font-bold">
+                  <FontAwesomeIcon icon={faCheck} className="text-secondary" />{" "}
+                  Private Guide
+                </span>
+              </div>
+              <button className="transition-colors w-[161px] h-[54px] bg-white font-bold text-primary border-2 border-primary rounded-md hover:bg-secondary hover:text-white hover:border-white">
+                Contact Us
+              </button>
+            </aside>
+          </main>
+          <footer>
+            <Titles title="Browse By Category" position="center" />
+            <h2 className="text-primary font-bold text-4xl text-center mt-4">
+              Pick a Tour Type
+            </h2>
+          </footer>
+          <div className="w-full mx-auto">
+            <Slider
+              infinite={false}
+              dots
+              dotsClass="slick-dots -bottom-16"
+              slidesToShow={6}
+              arrows={false}
+            >
+              <CardTourType label="Adventure" price={250} />
+              <CardTourType label="Adventure" price={250} />
+              <CardTourType label="Adventure" price={250} />
+              <CardTourType label="Adventure" price={250} />
+              <CardTourType label="Adventure" price={250} />
+              <CardTourType label="Adventure" price={250} />
+              <CardTourType label="Adventure" price={250} />
+            </Slider>
+          </div>
+        </section>
       </div>
     </section>
   );
