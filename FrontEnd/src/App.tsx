@@ -1,7 +1,12 @@
-import Home from "./pages/Home";
+import TourPackage from "./pages/TourPackage";
+import { NextUIProvider } from "@nextui-org/react";
 
 function App() {
-  return <Home />;
+  return (
+    <NextUIProvider>
+      <TourPackage />
+    </NextUIProvider>
+  );
 }
 
 export default App;
