@@ -1,5 +1,6 @@
-type Titltes = {
-  tittle: string;
+type TitlesProps = {
+  title: string;
+  position?: "center" | "left" | "right";
 };
 
-export default Titltes;
+export default TitlesProps;
