@@ -13,6 +13,7 @@ import TravelCounters from "../../components/TravelCounters";
 import ThirdSection from "./ThidSection";
 import FourthSection from "./FourthSection";
 import FifthSection from "./FifthSection";
+import Footer from "./Footer";
 
 function Home() {
   return (
@@ -267,6 +268,7 @@ function Home() {
       <ThirdSection />
       <FourthSection />
       <FifthSection />
+      <Footer />
     </div>
   );
 }
