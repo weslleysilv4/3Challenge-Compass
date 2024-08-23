@@ -12,6 +12,7 @@ import Slider from "react-slick";
 import TravelCounters from "../../components/TravelCounters";
 import ThirdSection from "./ThidSection";
 import FourthSection from "./FourthSection";
+import FifthSection from "./FifthSection";
 
 function Home() {
   return (
@@ -265,6 +266,7 @@ function Home() {
       </section>
       <ThirdSection />
       <FourthSection />
+      <FifthSection />
     </div>
   );
 }
