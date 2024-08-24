@@ -8,7 +8,7 @@ function SliderFilter() {
       <h6 className="text-primary font-bold text-lg">Filter By</h6>
       <div className="flex flex-col gap-2 w-full max-w-md">
         <Slider
-          size="md"
+          size="sm"
           step={5}
           formatOptions={{ style: "currency", currency: "USD" }}
           color="secondary"

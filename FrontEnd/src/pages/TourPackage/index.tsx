@@ -3,9 +3,16 @@ import Header from "../../components/Header";
 import Hero from "./Hero";
 import SearchBox from "./aside/Search";
 import SliderFilter from "./aside/SlideFilter";
-import { Checkbox, CheckboxGroup, Select, SelectItem } from "@nextui-org/react";
+import {
+  Checkbox,
+  CheckboxGroup,
+  Pagination,
+  Select,
+  SelectItem,
+} from "@nextui-org/react";
 import SortButton from "../../components/SortButton";
 import Card from "../../components/Card";
+import Footer from "../Home/Footer";
 
 function TourPackage() {
   return (
@@ -163,12 +170,50 @@ function TourPackage() {
                     duration="7 days"
                     price={520}
                   />
+                  <Card
+                    imageSrc="https://elquarto.com/blog/wp-content/uploads/2022/10/Budapeste.jpg" // Replace with your image source
+                    location="Budapest, Hungary"
+                    title="Wonders of the West Coast & Kimberley"
+                    rating={4.8}
+                    reviewsCount={15}
+                    duration="7 days"
+                    price={520}
+                  />
+                  <Card
+                    imageSrc="https://elquarto.com/blog/wp-content/uploads/2022/10/Budapeste.jpg" // Replace with your image source
+                    location="Budapest, Hungary"
+                    title="Wonders of the West Coast & Kimberley"
+                    rating={4.8}
+                    reviewsCount={15}
+                    duration="7 days"
+                    price={520}
+                  />
+                  <Card
+                    imageSrc="https://elquarto.com/blog/wp-content/uploads/2022/10/Budapeste.jpg" // Replace with your image source
+                    location="Budapest, Hungary"
+                    title="Wonders of the West Coast & Kimberley"
+                    rating={4.8}
+                    reviewsCount={15}
+                    duration="7 days"
+                    price={520}
+                  />
+                  <div className="col-span-3 mx-auto">
+                    <Pagination
+                      showControls
+                      total={10}
+                      initialPage={1}
+                      radius="full"
+                      variant="light"
+                      color="secondary"
+                    />
+                  </div>
                 </section>
               </main>
             </div>
           </main>
         </div>
       </section>
+      <Footer />
     </>
   );
 }
