@@ -1,5 +1,6 @@
 import React from "react";
-import Form from "../../../components/Form";
+import Form from "@Components/Form";
+import { NavLink } from "react-router-dom";
 
 function Hero() {
   return (
@@ -9,12 +10,12 @@ function Hero() {
           <h1 className="text-5xl font-bold text-white">Tour Package</h1>
           <ul>
             <li>
-              <a href="#" className="font-bold text-white">
+              <NavLink to="/" className="font-bold text-white">
                 Home /
-              </a>{" "}
-              <a href="#" className="font-bold text-secondary">
+              </NavLink>{" "}
+              <NavLink to="#" className="font-bold text-secondary">
                 Tour Package
-              </a>
+              </NavLink>
             </li>
           </ul>
           <Form />

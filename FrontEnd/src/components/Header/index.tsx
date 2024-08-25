@@ -16,11 +16,11 @@ function Header() {
       <div className="bg-gray-100">
         <div className="container mx-auto">
           <header className="flex justify-between items-center py-1 text-xs text-primary">
-            <div className="">
+            <nav>
               <a href="tel: +(000)999-898-99">(000)999-898-999</a>
               <span> | </span>
               <a href="mailto:info@trisog.com">info@trisog.com</a>
-            </div>
+            </nav>
             <div className="flex w-32 justify-end items-center">
               <div className="flex w-full justify-evenly">
                 <a href="https://www.x.com" target="_blank">

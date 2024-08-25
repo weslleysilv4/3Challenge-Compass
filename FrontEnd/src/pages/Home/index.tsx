@@ -1,4 +1,4 @@
-import Header from "../../components/Header";
+import Header from "@Components/Header";
 import FifthSection from "./FifthSection";
 import Footer from "./Footer";
 import FourthSection from "./FourthSection";
