@@ -1,10 +1,10 @@
-import TourPackage from "./pages/TourPackage";
 import { NextUIProvider } from "@nextui-org/react";
+import Router from "@Routes/Router";
 
 function App() {
   return (
     <NextUIProvider>
-      <TourPackage />
+      <Router />
     </NextUIProvider>
   );
 }

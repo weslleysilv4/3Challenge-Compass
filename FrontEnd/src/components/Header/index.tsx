@@ -8,6 +8,7 @@ import { faUser } from "@fortawesome/free-regular-svg-icons";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Logo from "../Logo";
+import { NavLink } from "react-router-dom";
 
 function Header() {
   return (
@@ -51,20 +52,20 @@ function Header() {
           <div className="flex justify-between items-center py-6">
             <div className="flex justify-between items-center w-[42rem] ">
               <div className="mr-8">
-                <a href="#">
+                <NavLink to="/">
                   <Logo />
-                </a>
+                </NavLink>
               </div>
               <nav className="flex w-full h-full items-center">
                 <ul className="lg:flex flex-1 justify-between text-primary  md:hidden">
                   <li className="hover:text-secondary">
-                    <a href="/">Home</a>
+                    <NavLink to="/">Home</NavLink>
                   </li>
                   <li className="hover:text-secondary">
                     <a href="#">About</a>
                   </li>
                   <li className="hover:text-secondary">
-                    <a href="#">Tours</a>
+                    <NavLink to="/tours">Tours</NavLink>
                   </li>
                   <li className="hover:text-secondary">
                     <a href="#">Destination</a>
