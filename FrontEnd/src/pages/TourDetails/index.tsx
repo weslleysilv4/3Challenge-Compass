@@ -1,10 +1,11 @@
+import AddReview from "@Components/AddReview";
 import AverageReview from "@Components/AverageReview";
 import Header from "@Components/Header";
 import UserReview from "@Components/UserReview";
 import { faImage } from "@fortawesome/free-regular-svg-icons";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Progress } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
 import Footer from "@Pages/Home/Footer";
 import {
   Heart,
@@ -16,6 +17,14 @@ import React from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 
 function TourDetails() {
+  const categories = [
+    "Services",
+    "Locations",
+    "Amenities",
+    "Prices",
+    "Food",
+    "Room comfort",
+  ];
   return (
     <>
       <Header />
@@ -125,7 +134,9 @@ function TourDetails() {
               amenitiesReview={3.0}
               roomReview={4.6}
             />
-            <h6>Showing 1 review</h6>
+            <h6 className="text-lg font-bold text-primary my-5">
+              Showing 1 review
+            </h6>
             <UserReview
               date="March 20, 2022"
               name="Sindy Simmons"
@@ -133,6 +144,7 @@ function TourDetails() {
               reviewCounter={15}
               review="Objectively productivate just in time information with dynamic channels. Energistically exploit seamless growth strategies after 24/7 experiences."
             />
+            <AddReview categories={categories} />
           </aside>
         </div>
       </main>
