@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String   @id @default(cuid()) @map("_id")
+  email    String   @unique
+  password String
+  image    String?
+}
+
+model Tour {
+  id          String   @id @default(uuid()) @map("_id")
+
+  name        String
+  country     String
+  city        String
+  latitude    Float
+  longitude   Float
+  price       Float
+  maxGroupSize Int
+  minAge     Int
+
+  initialDate DateTime
+  finalDate   DateTime
+  ratingAverage Float
+  duration    String
+
+  reviews Review[]
+  category CategoriesOnTour[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+}
+
+model Category {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  tour       CategoriesOnTour[]
+}
+
+model CategoriesOnTour {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  tour        Tour @relation(fields: [tourId], references: [id])
+  tourId      String
+  category    Category @relation(fields: [categoryId], references: [id])
+  categoryId  String @db.ObjectId
+}
+
+model Review {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  tour        Tour     @relation(fields: [tourId], references: [id])
+  tourId      String
+  name        String
+  email       String
+  comment     String
+  ratings      Rating[]
+  createdAt   DateTime @default(now())
+}
+
+model Rating {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  review      Review @relation(fields: [reviewId], references: [id])
+  reviewId    String @db.ObjectId
+  services    Float @default(0)
+  prices       Float @default(0)
+  locations    Float @default(0)
+  food        Float @default(0)
+  amenities   Float @default(0)
+  roomComfortAndQuality Float @default(0)
+}
