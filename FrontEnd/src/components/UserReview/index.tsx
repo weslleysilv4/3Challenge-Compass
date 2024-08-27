@@ -17,7 +17,7 @@ function UserReview({
   reviewCounter,
 }: UserReviewProps) {
   return (
-    <div className="h-[205px] border-2 border-gray-100 w-1/2 flex items-center p-5 gap-5">
+    <div className="h-[205px] border-2 border-gray-100 w-full flex items-center p-5 gap-5">
       <img
         src="https://placehold.co/100x100"
         alt=""

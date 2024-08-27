@@ -25,7 +25,7 @@ function AddReview({ categories }: AddReviewProps) {
   };
 
   return (
-    <div className="w-1/2 bg-slate-50 h-[530px] p-5 flex flex-col gap-10 justify-center">
+    <div className="w-full bg-slate-50 p-5 flex flex-col gap-10 justify-center mt-5">
       <h6 className="text-primary font-bold">Add a review</h6>
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-4 gap-4">
@@ -70,7 +70,12 @@ function AddReview({ categories }: AddReviewProps) {
             onChange={(e) => setReviewText(e.target.value)}
           />
         </div>
-        <Button color="secondary" className="rounded-md mt-5" type="submit">
+        <Button
+          color="secondary"
+          className="rounded-md mt-5"
+          type="submit"
+          size="lg"
+        >
           Submit review
         </Button>
       </form>

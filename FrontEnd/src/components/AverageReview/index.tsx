@@ -40,7 +40,7 @@ function AverageReview({
   };
 
   return (
-    <div className="w-1/2 h-[260px] p-6 bg-slate-50 flex gap-10 items-center ">
+    <div className="w-full h-[260px] p-6 bg-slate-50 flex gap-10 items-center ">
       <main className="bg-secondary w-[180px] h-full flex flex-col items-center justify-center  gap-2">
         <h6 className="text-white text-6xl font-bold">
           {calculateAverage().toFixed(1)}

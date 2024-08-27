@@ -1,8 +1,8 @@
 import React from "react";
 import Header from "../../components/Header";
 import Hero from "./Hero";
-import SearchBox from "./aside/Search";
-import SliderFilter from "./aside/SlideFilter";
+import SearchBox from "./Aside/Search";
+import SliderFilter from "./Aside/SlideFilter";
 import {
   Checkbox,
   CheckboxGroup,
