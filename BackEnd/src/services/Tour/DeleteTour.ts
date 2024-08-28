@@ -1,29 +1,13 @@
 import { PrismaClient } from '@prisma/client'
 
-const tour = new PrismaClient().tour
+const prisma = new PrismaClient()
 
 class DeleteTourService {
   async execute(id: string) {
-    const tourFound = await tour.findUnique({
-      where: {
-        id,
-      },
-    })
-
-    if (!tourFound) {
-      throw new Error('Tour not found')
-    }
-
-    await tour.delete({
-      where: {
-        id,
-      },
+    const tourFound = await prisma.tour.findUnique({
+      where: { id },
       include: {
-        categories: {
-          include: {
-            category: true,
-          },
-        },
+        categories: true,
         reviews: {
           include: {
             ratings: true,
@@ -32,7 +16,23 @@ class DeleteTourService {
       },
     })
 
-    return { message: 'Tour deleted' }
+    if (!tourFound) {
+      throw new Error('Tour not found')
+    }
+
+    await prisma.$transaction(async (prisma) => {
+      await prisma.categoriesOnTour.deleteMany({
+        where: { tourId: id },
+      })
+      await prisma.review.deleteMany({
+        where: { tourId: id },
+      })
+      await prisma.tour.delete({
+        where: { id },
+      })
+    })
+
+    return { message: 'Tour deleted successfully' }
   }
 }
 

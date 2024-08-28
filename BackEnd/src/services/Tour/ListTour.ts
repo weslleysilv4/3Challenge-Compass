@@ -1,10 +1,20 @@
 import { PrismaClient } from '@prisma/client'
 
-const tour = new PrismaClient().tour
+const prisma = new PrismaClient()
 
 class ListTourService {
-  async getAll() {
-    const tours = await tour.findMany({
+  async getAll(
+    filters?: { country?: string; city?: string },
+    pagination?: { skip?: number; take?: number }
+  ) {
+    const { country, city } = filters || {}
+    const { skip, take } = pagination || {}
+
+    const tours = await prisma.tour.findMany({
+      where: {
+        country: country || undefined,
+        city: city || undefined,
+      },
       include: {
         categories: {
           include: {
@@ -17,12 +27,17 @@ class ListTourService {
           },
         },
       },
+      skip: skip,
+      take: take,
+      orderBy: {
+        createdAt: 'desc',
+      },
     })
     return tours
   }
 
   async getTour(id: string) {
-    const tourFound = await tour.findUnique({
+    const tourFound = await prisma.tour.findUnique({
       where: {
         id,
       },
@@ -39,6 +54,11 @@ class ListTourService {
         },
       },
     })
+
+    if (!tourFound) {
+      throw new Error('Tour not found')
+    }
+
     return tourFound
   }
 }

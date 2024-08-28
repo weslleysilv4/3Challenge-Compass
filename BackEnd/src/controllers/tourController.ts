@@ -3,6 +3,7 @@ import { Request, Response } from 'express'
 import { CreateTourService } from '../services/Tour/CreateTour'
 import { ListTourService } from '../services/Tour/ListTour'
 import { DeleteTourService } from '../services/Tour/DeleteTour'
+import { UpdateTourService } from '../services/Tour/UpdateTour'
 import { TourSchema } from '../validations/tour.validation'
 export const tourClient = new PrismaClient().tour
 
@@ -75,6 +76,22 @@ class tourController {
       const { id } = req.params as { id: string }
       const tourServices = new DeleteTourService()
       const tour = await tourServices.execute(id)
+      res.status(200).json(tour)
+    } catch (error) {
+      res.status(400).json(error)
+    }
+  }
+  async update(req: Request, res: Response) {
+    try {
+      const data = {
+        ...req.body,
+        initialDate: new Date(req.body.initialDate),
+        finalDate: new Date(req.body.finalDate),
+      }
+      const { id } = req.params
+      const tourServices = new UpdateTourService()
+
+      const tour = await tourServices.execute(id, data)
       res.status(200).json(tour)
     } catch (error) {
       res.status(400).json(error)

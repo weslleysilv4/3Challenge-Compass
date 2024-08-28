@@ -1,12 +1,12 @@
 import { z } from 'zod'
 
 export const CategorySchema = z.object({
-  id: z.number().int(),
-  name: z.string().min(1).optional(),
+  id: z.number().int().positive(),
+  name: z.string().min(1),
 })
 
 export const RatingSchema = z.object({
-  reviewId: z.number().int(),
+  reviewId: z.number().int().positive(),
   services: z.number().min(0).max(5),
   prices: z.number().min(0).max(5),
   locations: z.number().min(0).max(5),
@@ -20,8 +20,11 @@ export const ReviewSchema = z.object({
   name: z.string().min(1),
   email: z.string().email(),
   comment: z.string().min(10),
-  createdAt: z.string().datetime().optional(),
-  ratings: z.array(RatingSchema),
+  createdAt: z.preprocess(
+    (arg) => (arg ? new Date(arg as string) : undefined),
+    z.date().optional()
+  ),
+  ratings: z.array(RatingSchema).nonempty('Ratings cannot be empty'),
 })
 
 export const TourSchema = z.object({
@@ -34,12 +37,18 @@ export const TourSchema = z.object({
   price: z.number().positive(),
   maxGroupSize: z.number().int().positive(),
   minAge: z.number().int().positive().max(100),
-  initialDate: z.string().datetime(),
-  finalDate: z.string().datetime(),
+  initialDate: z.preprocess((arg) => new Date(arg as string), z.date()),
+  finalDate: z.preprocess((arg) => new Date(arg as string), z.date()),
   initialRatingAverage: z.number().min(0).max(5),
   duration: z.string().min(1),
-  createdAt: z.string().datetime().optional(),
-  updatedAt: z.string().datetime().optional(),
-  category: z.array(CategorySchema),
-  reviews: z.array(ReviewSchema),
+  createdAt: z.preprocess(
+    (arg) => (arg ? new Date(arg as string) : undefined),
+    z.date().optional()
+  ),
+  updatedAt: z.preprocess(
+    (arg) => (arg ? new Date(arg as string) : undefined),
+    z.date().optional()
+  ),
+  categories: z.array(CategorySchema).nonempty('Categories cannot be empty'),
+  reviews: z.array(ReviewSchema).optional(),
 })

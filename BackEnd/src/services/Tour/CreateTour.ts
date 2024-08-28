@@ -4,22 +4,25 @@ import { TourProps } from '../../Types/Tour'
 const prisma = new PrismaClient()
 
 export class CreateTourService {
-  async execute({
-    name,
-    image,
-    country,
-    city,
-    latitude,
-    longitude,
-    price,
-    maxGroupSize,
-    minAge,
-    initialDate,
-    finalDate,
-    initialRatingAverage,
-    duration,
-    categoryId,
-  }: TourProps) {
+  async execute(data: TourProps) {
+    const {
+      name,
+      image,
+      country,
+      city,
+      latitude,
+      longitude,
+      price,
+      maxGroupSize,
+      minAge,
+      initialDate,
+      finalDate,
+      initialRatingAverage,
+      duration,
+      reviews,
+      categories,
+    } = data
+
     const tour = await prisma.tour.create({
       data: {
         name,
@@ -35,16 +38,48 @@ export class CreateTourService {
         finalDate,
         initialRatingAverage,
         duration,
-        reviews: {
-          create: [],
-        },
-        categories: {
-          create: categoryId.map((categoryId: number) => ({
-            category: {
-              connect: { id: categoryId },
-            },
-          })),
-        },
+        reviews:
+          reviews && reviews.length > 0
+            ? {
+                create: reviews.map(
+                  ({ name, email, comment, createdAt, ratings }) => ({
+                    name,
+                    email,
+                    comment,
+                    createdAt,
+                    ratings: {
+                      create: ratings.map(
+                        ({
+                          services,
+                          prices,
+                          locations,
+                          food,
+                          amenities,
+                          roomComfortAndQuality,
+                        }) => ({
+                          services,
+                          prices,
+                          locations,
+                          food,
+                          amenities,
+                          roomComfortAndQuality,
+                        })
+                      ),
+                    },
+                  })
+                ),
+              }
+            : undefined,
+        categories:
+          categories && categories.length > 0
+            ? {
+                create: categories.map((category) => ({
+                  category: {
+                    connect: { id: category.id },
+                  },
+                })),
+              }
+            : undefined,
       },
     })
 

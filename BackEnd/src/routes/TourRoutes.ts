@@ -13,4 +13,12 @@ router.get('/tours/:id', (req: Request, res: Response) => {
   return new tourController().getTour(req, res)
 })
 
+router.delete('/tours/:id', (req: Request, res: Response) => {
+  return new tourController().delete(req, res)
+})
+
+router.put('/tours/:id', (req: Request, res: Response) => {
+  return new tourController().update(req, res)
+})
+
 export default router

@@ -12,27 +12,27 @@ export interface TourProps {
   finalDate: Date
   initialRatingAverage: number
   duration: string
-  categories: CategoryProps[]
-  reviews: ReviewProps[]
+  categories?: CategoryProps[]
+  reviews?: ReviewProps[]
 }
 
-interface ReviewProps {
+export interface ReviewProps {
   id?: number
   name: string
   email: string
   comment: string
-  rating: RatingProps[]
-  createdAt: string
+  ratings: RatingProps[]
+  createdAt: Date
 }
 
-interface CategoryProps {
-  id?: number
+export interface CategoryProps {
+  id: number
   name: string
 }
 
-interface RatingProps {
+export interface RatingProps {
   id?: number
-  category: string
+  category: RatingCategory
   services: number
   prices: number
   locations: number
@@ -41,4 +41,11 @@ interface RatingProps {
   roomComfortAndQuality: number
 }
 
-export { ReviewProps, CategoryProps, RatingProps }
+export enum RatingCategory {
+  SERVICES = 'services',
+  PRICES = 'prices',
+  LOCATIONS = 'locations',
+  FOOD = 'food',
+  AMENITIES = 'amenities',
+  ROOM_COMFORT_AND_QUALITY = 'roomComfortAndQuality',
+}
