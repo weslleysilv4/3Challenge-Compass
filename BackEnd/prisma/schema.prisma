@@ -1,9 +1,12 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -17,6 +20,7 @@ model User {
 model Tour {
   id          String   @id @default(uuid()) @map("_id")
 
+  image       String
   name        String
   country     String
   city        String
@@ -28,11 +32,11 @@ model Tour {
 
   initialDate DateTime
   finalDate   DateTime
-  ratingAverage Float
+  initialRatingAverage Float
   duration    String
 
   reviews Review[]
-  category CategoriesOnTour[]
+  categories CategoriesOnTour[]
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -40,21 +44,21 @@ model Tour {
 }
 
 model Category {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  id          Int @id @default(autoincrement()) @map("_id")
   name        String
   tour       CategoriesOnTour[]
 }
 
 model CategoriesOnTour {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  id          Int @id @default(autoincrement()) @map("_id")
   tour        Tour @relation(fields: [tourId], references: [id])
   tourId      String
   category    Category @relation(fields: [categoryId], references: [id])
-  categoryId  String @db.ObjectId
+  categoryId  Int
 }
 
 model Review {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  id          Int @id @default(autoincrement()) @map("_id")
   tour        Tour     @relation(fields: [tourId], references: [id])
   tourId      String
   name        String
@@ -65,9 +69,9 @@ model Review {
 }
 
 model Rating {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  id          Int @id @default(autoincrement()) @map("_id")
   review      Review @relation(fields: [reviewId], references: [id])
-  reviewId    String @db.ObjectId
+  reviewId    Int 
   services    Float @default(0)
   prices       Float @default(0)
   locations    Float @default(0)
