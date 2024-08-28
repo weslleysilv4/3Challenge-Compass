@@ -26,6 +26,18 @@ class ListTourService {
       where: {
         id,
       },
+      include: {
+        categories: {
+          include: {
+            category: true,
+          },
+        },
+        reviews: {
+          include: {
+            ratings: true,
+          },
+        },
+      },
     })
     return tourFound
   }

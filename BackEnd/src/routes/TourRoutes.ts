@@ -9,5 +9,8 @@ router.post('/tours', (req: Request, res: Response) => {
 router.get('/tours', (req: Request, res: Response) => {
   return new tourController().getAll(req, res)
 })
+router.get('/tours/:id', (req: Request, res: Response) => {
+  return new tourController().getTour(req, res)
+})
 
 export default router
