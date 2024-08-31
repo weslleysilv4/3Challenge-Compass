@@ -2,6 +2,7 @@ import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface UserReviewProps {
+  image: string;
   date: string;
   name: string;
   rating: number;
@@ -10,6 +11,7 @@ interface UserReviewProps {
 }
 
 function UserReview({
+  image,
   date,
   name,
   rating,
@@ -18,11 +20,7 @@ function UserReview({
 }: UserReviewProps) {
   return (
     <div className="h-[205px] border-2 border-gray-100 w-full flex items-center p-5 gap-5">
-      <img
-        src="https://placehold.co/100x100"
-        alt=""
-        className="rounded-full h-[100px] object-cover"
-      />
+      <img src={image} alt="" className="rounded-full h-[100px] object-cover" />
       <main className="flex flex-col gap-2 w-3/4">
         <span className="text-tertiary font-light text-xs">{date}</span>
         <h6 className="text-primary font-bold">{name}</h6>

@@ -2,10 +2,11 @@ import AddReview from "@Components/AddReview";
 import AverageReview from "@Components/AverageReview";
 import Header from "@Components/Header";
 import UserReview from "@Components/UserReview";
+import { AuthContext } from "@Contexts/Auth";
 import { faImage } from "@fortawesome/free-regular-svg-icons";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Input, Select, SelectItem } from "@nextui-org/react";
+import { Button, Checkbox, Input, Select, SelectItem } from "@nextui-org/react";
 import Footer from "@Pages/Home/Footer";
 import {
   Heart,
@@ -15,10 +16,16 @@ import {
   ShareNetwork,
   VideoCamera,
 } from "@phosphor-icons/react";
-import React from "react";
+import { TourResponse, TourProps } from "@Types/Tour";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { useParams } from "react-router-dom";
 
 function TourDetails() {
+  const { user } = useContext(AuthContext);
+  const [tour, setTour] = useState<TourProps>();
+  const { id } = useParams();
   const categories = [
     "Services",
     "Locations",
@@ -27,6 +34,23 @@ function TourDetails() {
     "Food",
     "Room comfort",
   ];
+  useEffect(() => {
+    const fetchtour = async () => {
+      try {
+        const { data } = await axios.get<TourProps>(
+          `${import.meta.env.VITE_API_BASE_URL}/tours/${id}`
+        );
+        setTour(data);
+      } catch (error) {
+        console.error("Error fetching tour:", error);
+      }
+    };
+    fetchtour();
+  }, [id]);
+  if (!tour) {
+    //TODO: Add loading spinner
+    return <div>Loading...</div>;
+  }
   return (
     <>
       <Header />
@@ -37,8 +61,8 @@ function TourDetails() {
               <section className="w-full">
                 <figure className="w-full relative h-[401px] bg-black">
                   <img
-                    src="https://firebasestorage.googleapis.com/v0/b/challenge-compass-d71cc.appspot.com/o/images%2Fcapa.png?alt=media&token=6cbbae71-fd81-43c5-84a9-13941ba49a4e"
-                    alt="Tour Details"
+                    src={tour.image}
+                    alt="Image of Tour"
                     className="bg-cover w-full h-full"
                   />
                   <Button className="absolute bottom-6 right-32 font-semibold">
@@ -51,7 +75,9 @@ function TourDetails() {
                 <div className="flex justify-between mt-5">
                   <div className="flex items-center text-tertiary">
                     <MapPin size={24} />
-                    <span className="mr-10">Budapest, Hungary</span>
+                    <span className="mr-10">
+                      {tour.city}, {tour?.country}
+                    </span>
                     <a href="#map" className="text-secondary">
                       View on map
                     </a>
@@ -66,7 +92,7 @@ function TourDetails() {
                   </div>
                 </div>
                 <h1 className="text-4xl font-bold mt-5 text-primary">
-                  Wonders of the West Coast & Kimberly
+                  {tour.name}
                 </h1>
                 <hr className="my-5" />
                 <table className="w-full table-auto">
@@ -82,19 +108,28 @@ function TourDetails() {
                   </thead>
                   <tbody className="text-primary font-bold">
                     <tr>
-                      <td className="text-secondary">$104</td>
-                      <td>7 days</td>
-                      <td>25</td>
-                      <td>12+</td>
-                      <td>Adventure, Beaches</td>
+                      <td className="text-secondary">${tour.price}</td>
+                      <td>{tour.duration}</td>
+                      <td>{tour.maxGroupSize}</td>
+                      <td>{tour.minAge}</td>
+                      <td>
+                        {tour?.categories.map((category, index) => (
+                          <span key={index}>
+                            {category.category.name}
+                            {index < tour.categories.length - 1 && ", "}
+                          </span>
+                        ))}
+                      </td>
                       <td>
                         <FontAwesomeIcon
                           icon={faStar}
                           size="sm"
                           className="text-secondary"
-                        />{" "}
-                        4.8
-                        <span className="font-normal">(15 reviews)</span>
+                        />
+                        {tour.initialRatingAverage.toFixed(1)}{" "}
+                        <span className="font-normal">
+                          ({tour?.reviews.length} reviews)
+                        </span>
                       </td>
                     </tr>
                   </tbody>
@@ -102,15 +137,12 @@ function TourDetails() {
                 <h2 className="font-bold text-2xl text-primary my-5">
                   Overview
                 </h2>
-                <p className="text-tertiary">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam ac.
-                </p>
+                <p className="text-tertiary">{tour.overview}</p>
               </section>
               <section id="map" className="w-full">
                 <h2 className="font-bold text-2xl text-primary my-5 ">Map</h2>
                 <MapContainer
-                  center={[51.505, -0.09]}
+                  center={[tour.latitude, tour.longitude]}
                   zoom={25}
                   scrollWheelZoom={false}
                   style={{ height: "400px", width: "99%" }}
@@ -119,7 +151,7 @@ function TourDetails() {
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                   />
-                  <Marker position={[51.505, -0.09]}>
+                  <Marker position={[tour.latitude, tour.longitude]}>
                     <Popup>
                       A pretty CSS3 popup. <br /> Easily customizable.
                     </Popup>
@@ -140,17 +172,27 @@ function TourDetails() {
                 />
               </section>
               <section className="w-[99%]">
-                <h6 className="text-lg font-bold text-primary my-5">
-                  Showing 1 review
-                </h6>
-                <UserReview
-                  date="March 20, 2022"
-                  name="Sindy Simmons"
-                  rating={4.8}
-                  reviewCounter={15}
-                  review="Objectively productivate just in time information with dynamic channels. Energistically exploit seamless growth strategies after 24/7 experiences."
-                />
-                <AddReview categories={categories} />
+                {tour.reviews.length > 0 ? (
+                  <>
+                    <h6 className="text-lg font-bold text-primary my-5">
+                      Showing 1 review
+                    </h6>
+                    <UserReview
+                      date={new Date(
+                        tour.reviews.map((review) => review.createdAt)[0]
+                      ).toLocaleDateString()}
+                      name={tour.reviews.map((review) => review.name)[0]}
+                      rating={4.8}
+                      image={user?.photoURL || ""}
+                      reviewCounter={tour.reviews.length}
+                      review={tour.reviews.map((review) => review.comment)[0]}
+                    />
+                  </>
+                ) : (
+                  <h6 className="text-lg font-bold text-primary my-5">
+                    No reviews yet, add the first review!
+                  </h6>
+                )}
               </section>
             </main>
             <aside className="w-1/4 h-[620px] bg-slate-50">
@@ -174,27 +216,14 @@ function TourDetails() {
                     aria-label="Select option"
                     size="lg"
                   >
-                    <SelectItem key={"one"} value={"one"}>
-                      One Day
-                    </SelectItem>
-                    <SelectItem key={"two"} value={"two"}>
-                      Two Days
-                    </SelectItem>
-                    <SelectItem key={"three"} value={"three"}>
-                      Three Days
-                    </SelectItem>
-                    <SelectItem key={"four"} value={"four"}>
-                      Four Days
-                    </SelectItem>
-                    <SelectItem key={"five"} value={"five"}>
-                      Five Days
-                    </SelectItem>
-                    <SelectItem key={"six"} value={"six"}>
-                      Sixt Days
-                    </SelectItem>
-                    <SelectItem key={"seven"} value={"seven"}>
-                      Seven Days
-                    </SelectItem>
+                    {Array.from(
+                      { length: parseInt(tour.duration) },
+                      (_, index) => (
+                        <SelectItem key={index + 1} value={`${index + 1}`}>
+                          {index + 1} Day{index + 1 > 1 ? "s" : ""}
+                        </SelectItem>
+                      )
+                    )}
                   </Select>
                 </div>
                 <section className="w-full h-full flex flex-col gap-2">
@@ -213,33 +242,60 @@ function TourDetails() {
                   </div>
                   <div className="flex flex-row items-center justify-between">
                     <p>Kids (12+ years)</p>
-                    <div className="flex items-center">
-                      <Button isIconOnly>
-                        <Minus size={22} />
-                      </Button>
-                      <Button isIconOnly>0</Button>
-                      <Button isIconOnly>
-                        <Plus size={22} />
-                      </Button>
-                    </div>
+                    {tour.minAge <= 12 ? (
+                      <div className="flex items-center">
+                        <Button isIconOnly>
+                          <Minus size={22} />
+                        </Button>
+                        <Button isIconOnly>0</Button>
+                        <Button isIconOnly>
+                          <Plus size={22} />
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center">
+                        <Button isIconOnly isDisabled>
+                          <Minus size={22} />
+                        </Button>
+                        <Button isIconOnly isDisabled>
+                          0
+                        </Button>
+                        <Button isIconOnly isDisabled>
+                          <Plus size={22} />
+                        </Button>
+                      </div>
+                    )}
                   </div>
                   <div className="flex flex-row items-center justify-between">
                     <p>Children (3+ years)</p>
-                    <div className="flex items-center">
-                      <Button isIconOnly>
-                        <Minus size={22} />
-                      </Button>
-                      <Button isIconOnly>0</Button>
-                      <Button isIconOnly>
-                        <Plus size={22} />
-                      </Button>
-                    </div>
+                    {tour.minAge <= 3 ? (
+                      <div className="flex items-center">
+                        <Button isIconOnly>
+                          <Minus size={22} />
+                        </Button>
+                        <Button isIconOnly>0</Button>
+                        <Button isIconOnly>
+                          <Plus size={22} />
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center">
+                        <Button isIconOnly isDisabled>
+                          <Minus size={22} />
+                        </Button>
+                        <Button isIconOnly isDisabled>
+                          0
+                        </Button>
+                        <Button isIconOnly isDisabled>
+                          <Plus size={22} />
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </section>
               </div>
             </aside>
           </div>
-          <section>Teste</section>
         </div>
       </section>
       <Footer />

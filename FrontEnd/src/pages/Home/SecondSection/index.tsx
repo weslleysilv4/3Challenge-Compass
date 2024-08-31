@@ -1,10 +1,33 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
-import Card from "../../../components/Card";
-import Titles from "../../../components/Titles";
-import TravelCounters from "../../../components/TravelCounters";
+import Card from "@Components/Card";
+import Titles from "@Components/Titles";
+import TravelCounters from "@Components/TravelCounters";
+import API from "@Services/API";
+import { TourProps } from "@Types/Tour";
+import { useNavigate } from "react-router-dom";
 
 function SecondSection() {
+  const [tours, setTours] = useState<TourProps[]>([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchTours = async () => {
+      try {
+        const response = await API.getTours();
+        console.log(response);
+        setTours(response.tours);
+        console.log(tours);
+      } catch (error) {
+        console.error("Error fetching tours:", error);
+      }
+    };
+
+    fetchTours();
+  }, []);
+  const handleCardClick = (id: string) => {
+    navigate(`/tours/${id}`);
+  };
   return (
     <section>
       <div className="container mx-auto">
@@ -22,60 +45,20 @@ function SecondSection() {
               dots
               autoplay
             >
-              <Card
-                imageSrc="https://elquarto.com/blog/wp-content/uploads/2022/10/Budapeste.jpg" // Replace with your image source
-                location="Budapest, Hungary"
-                title="Wonders of the West Coast & Kimberley"
-                rating={4.8}
-                reviewsCount={15}
-                duration="7 days"
-                price={520}
-              />
-              <Card
-                imageSrc="https://elquarto.com/blog/wp-content/uploads/2022/10/Budapeste.jpg" // Replace with your image source
-                location="Budapest, Hungary"
-                title="Wonders of the West Coast & Kimberley"
-                rating={4.8}
-                reviewsCount={15}
-                duration="7 days"
-                price={520}
-              />
-              <Card
-                imageSrc="https://elquarto.com/blog/wp-content/uploads/2022/10/Budapeste.jpg" // Replace with your image source
-                location="Budapest, Hungary"
-                title="Wonders of the West Coast & Kimberley"
-                rating={4.8}
-                reviewsCount={15}
-                duration="7 days"
-                price={520}
-              />
-              <Card
-                imageSrc="https://elquarto.com/blog/wp-content/uploads/2022/10/Budapeste.jpg" // Replace with your image source
-                location="Budapest, Hungary"
-                title="Wonders of the West Coast & Kimberley"
-                rating={4.8}
-                reviewsCount={15}
-                duration="7 days"
-                price={520}
-              />
-              <Card
-                imageSrc="https://elquarto.com/blog/wp-content/uploads/2022/10/Budapeste.jpg" // Replace with your image source
-                location="Budapest, Hungary"
-                title="Wonders of the West Coast & Kimberley"
-                rating={4.8}
-                reviewsCount={15}
-                duration="7 days"
-                price={520}
-              />
-              <Card
-                imageSrc="https://elquarto.com/blog/wp-content/uploads/2022/10/Budapeste.jpg" // Replace with your image source
-                location="Budapest, Hungary"
-                title="Wonders of the West Coast & Kimberley"
-                rating={4.8}
-                reviewsCount={15}
-                duration="7 days"
-                price={520}
-              />
+              {tours.map((tour) => (
+                <Card
+                  key={tour.id}
+                  image={tour.image}
+                  city={tour.city}
+                  country={tour.country}
+                  title={tour.name}
+                  rating={tour.initialRatingAverage}
+                  reviewsCount={tour.reviews.length}
+                  duration={tour.duration}
+                  price={tour.price}
+                  onClick={() => handleCardClick(tour.id)}
+                />
+              ))}
             </Slider>
           </div>
         </section>

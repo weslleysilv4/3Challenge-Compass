@@ -5,13 +5,15 @@ import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { faClock, faHeart } from "@fortawesome/free-regular-svg-icons";
 
 const Card = ({
-  imageSrc,
-  location,
+  image,
+  city,
+  country,
   title,
   rating,
   reviewsCount,
   duration,
   price,
+  onClick,
 }: CardProps) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -20,18 +22,20 @@ const Card = ({
     setIsFavorite(!isFavorite);
     setIsAnimating(true);
 
-    // Remove the animation class after the animation ends
     setTimeout(() => {
       setIsAnimating(false);
-    }, 300); // Duration of the animation
+    }, 300);
   };
 
   return (
-    <div className="max-w-xs rounded overflow-hidden shadow-lg">
+    <div
+      onClick={onClick}
+      className="cursor-pointer max-w-xs rounded overflow-hidden shadow-lg"
+    >
       <div className="relative w-full">
         <img
           className="w-full h-[218px] object-cover"
-          src={imageSrc}
+          src={image}
           alt={title}
         />
         <button
@@ -48,14 +52,18 @@ const Card = ({
         </button>
       </div>
       <div className="px-6 py-4">
-        <div className="text-primary text-sm mb-1">{location}</div>
+        <div className="text-primary text-sm mb-1">
+          {city}, {country}
+        </div>
         <div className="text-primary font-bold text-xl mb-2">{title}</div>
         <div className="flex row justify-between items-center mb-2">
           <div>
             <span className="text-white text-xs mr-2 bg-secondary rounded-md p-1 ">
               <FontAwesomeIcon icon={faStar} /> {rating}
             </span>
-            <span className="text-primary">{reviewsCount} reviews</span>
+            <span className="text-primary">
+              {reviewsCount} {reviewsCount > 1 ? "reviews" : "review"}
+            </span>
           </div>
           <div className="text-primary">
             <FontAwesomeIcon icon={faClock} /> {duration}

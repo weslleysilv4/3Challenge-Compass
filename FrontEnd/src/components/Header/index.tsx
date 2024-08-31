@@ -8,9 +8,23 @@ import { faUser } from "@fortawesome/free-regular-svg-icons";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Logo from "../Logo";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
+import UserProfile from "@Components/UserProfile";
+import { AuthContext } from "@Contexts/Auth";
+import { useContext } from "react";
+import {
+  Dropdown,
+  DropdownTrigger,
+  Button,
+  DropdownMenu,
+  DropdownItem,
+} from "@nextui-org/react";
+import { SignOut } from "@phosphor-icons/react";
+import { logout } from "@Services/firebaseLogins";
 
 function Header() {
+  const { user } = useContext(AuthContext);
+
   return (
     <header className="">
       <div className="bg-gray-100">
@@ -23,17 +37,26 @@ function Header() {
             </nav>
             <div className="flex w-32 justify-end items-center">
               <div className="flex w-full justify-evenly">
-                <a href="https://www.x.com" target="_blank">
+                <a
+                  href="https://www.x.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <FontAwesomeIcon icon={faXTwitter} />
                 </a>
                 <a
                   href="https://www.google.com.br/"
                   target="_blank"
                   className="text-primary"
+                  rel="noopener noreferrer"
                 >
                   <FontAwesomeIcon icon={faGoogle} />
                 </a>
-                <a href="https://br.pinterest.com/" target="_blank">
+                <a
+                  href="https://br.pinterest.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <FontAwesomeIcon icon={faPinterest} />
                 </a>
               </div>
@@ -83,16 +106,39 @@ function Header() {
               </nav>
             </div>
             <nav className="w-36">
-              <ul className="flex items-center justify-between text-primary ">
+              <ul className="flex items-center justify-between text-primary gap-2 ">
                 <li>
                   <a href="#">
                     <FontAwesomeIcon icon={faMagnifyingGlass} />
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="font-bold text-sm">
-                    <FontAwesomeIcon icon={faUser} /> Login / Signup
-                  </a>
+                  {user ? (
+                    <Dropdown>
+                      <DropdownTrigger>
+                        <Button variant="light">
+                          <UserProfile />
+                        </Button>
+                      </DropdownTrigger>
+                      <DropdownMenu aria-label="Static Actions">
+                        <DropdownItem
+                          key="logout"
+                          className="flex flex-row"
+                          color="default"
+                          onClick={() => logout()}
+                        >
+                          <span className="flex gap-2">
+                            <SignOut size={18} />
+                            Logout
+                          </span>
+                        </DropdownItem>
+                      </DropdownMenu>
+                    </Dropdown>
+                  ) : (
+                    <Link to="/login" className="font-bold text-sm">
+                      <FontAwesomeIcon icon={faUser} /> Login / Signup
+                    </Link>
+                  )}
                 </li>
               </ul>
             </nav>

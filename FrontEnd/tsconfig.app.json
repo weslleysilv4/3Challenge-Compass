@@ -20,7 +20,9 @@
       "@Contexts/*": ["src/contexts/*"],
       "@Services/*": ["src/services/*"],
       "@Routes/*": ["src/routes/*"],
-      "@Types/*": ["src/types/*"]
+      "@Types/*": ["src/@types/*"],
+      "@Hooks/*": ["src/hooks/*"],
+      "@Schemas/*": ["src/schemas/*"]
     },
 
     /* Linting */

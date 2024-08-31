@@ -4,7 +4,6 @@ import { CreateUserService } from '../services/Users/CreateUser'
 import { ListUserService } from '../services/Users/ListUser'
 import { DeleteUserService } from '../services/Users/DeleteUser'
 import { UpdateUserService } from '../services/Users/UpdateUser'
-import { hash } from 'bcrypt'
 import UserProps from '../Types/User'
 import {
   userUpdateValidation,
@@ -17,13 +16,13 @@ class userController {
   async create(req: Request, res: Response) {
     try {
       await userValidation.parse(req.body)
-      const { email, password, image } = req.body as UserProps
-      const hashedPassword = await hash(password, 10)
+      const { id, email, name, image } = req.body as UserProps
 
       const usersService = new CreateUserService()
       const user = await usersService.execute({
+        id,
         email,
-        password: hashedPassword,
+        name,
         image,
       })
       res.status(201).json(user)
@@ -68,9 +67,9 @@ class userController {
     try {
       await userUpdateValidation.parse(req.body)
       const { id } = req.params
-      const { email, password, image } = req.body
+      const { email, name, image } = req.body
       const usersService = new UpdateUserService()
-      const user = await usersService.execute({ id, email, password, image })
+      const user = await usersService.execute({ id, email, name, image })
       res.status(200).json(user)
     } catch (error) {
       res.status(400).json(error)

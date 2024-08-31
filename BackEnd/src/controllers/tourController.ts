@@ -1,18 +1,20 @@
 import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express'
-import { CreateTourService } from '../services/Tour/CreateTour'
-import { ListTourService } from '../services/Tour/ListTour'
-import { DeleteTourService } from '../services/Tour/DeleteTour'
-import { UpdateTourService } from '../services/Tour/UpdateTour'
+import { CreateTourService } from '../services/Tours/CreateTour'
+import { ListTourService } from '../services/Tours/ListTour'
+import { DeleteTourService } from '../services/Tours/DeleteTour'
+import { UpdateTourService } from '../services/Tours/UpdateTour'
 import { TourSchema } from '../validations/tour.validation'
 export const tourClient = new PrismaClient().tour
 
 class tourController {
-  async create(req: Request, res: Response): Promise<Response> {
+  async create(req: Request, res: Response) {
     const {
       name,
       country,
       image,
+      overview,
+      continent,
       city,
       latitude,
       longitude,
@@ -26,14 +28,15 @@ class tourController {
       categories,
       reviews,
     } = req.body
-
-    await TourSchema.parse(req.body)
+    console.log(req.body)
     const createTourService = new CreateTourService()
     try {
       const tour = await createTourService.execute({
         name,
         country,
         image,
+        overview,
+        continent,
         city,
         latitude,
         longitude,
@@ -49,16 +52,44 @@ class tourController {
       })
       return res.status(201).json(tour)
     } catch (error) {
-      return res.status(400).json(error)
+      if (error instanceof Error) {
+        res.status(400).json({ error: error.name, message: error.message })
+      } else {
+        res.status(400).json({ error: 'Unknown error', message: String(error) })
+      }
     }
   }
   async getAll(req: Request, res: Response) {
     try {
+      const skip = Number(req.query.skip) || 0
+      const take = Number(req.query.take) || 9
+      const sort = (req.query.sort as { [key: string]: 'asc' | 'desc' }) || {
+        name: 'asc',
+      }
+      const filters =
+        (req.query.filter as {
+          categories?: string
+          country?: string
+          price?: string
+          rating?: string
+          guests?: string
+          continent?: string
+        }) || {}
+      const formatedFilters = {
+        ...filters,
+        price: Number(filters.price) || undefined,
+        initialRatingAverage: Number(filters.rating) || undefined,
+        maxGroupSize: Number(filters.guests) || undefined,
+      }
       const tourServices = new ListTourService()
-      const tours = await tourServices.getAll()
+      const tours = await tourServices.getAll(skip, take, sort, formatedFilters)
       res.status(200).json(tours)
     } catch (error) {
-      res.status(400).json(error)
+      if (error instanceof Error) {
+        res.status(400).json({ error: error.name, message: error.message })
+      } else {
+        res.status(400).json({ error: 'Unknown error', message: String(error) })
+      }
     }
   }
   async getTour(req: Request, res: Response) {

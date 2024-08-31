@@ -1,14 +1,15 @@
 import StarRating from "@Components/StarRating";
-import { Button, Input, Textarea } from "@nextui-org/react";
+import { Button, Checkbox, Input, Textarea } from "@nextui-org/react";
 import React, { useState } from "react";
 
 interface AddReviewProps {
-  categories: string[];
+  onSubmitted?: () => void;
 }
 
-function AddReview({ categories }: AddReviewProps) {
+function AddReview({ onSubmitted }: AddReviewProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [anonymous, setAnonymous] = useState(true);
   const [reviewText, setReviewText] = useState("");
   const [ratings, setRatings] = useState<{ [key: string]: number }>({});
 
@@ -19,15 +20,23 @@ function AddReview({ categories }: AddReviewProps) {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log(name, email, reviewText, ratings);
+  const handleAnonymousChange = () => {
+    setAnonymous((prev) => !prev);
   };
 
   return (
     <div className="w-full bg-slate-50 p-5 flex flex-col gap-10 justify-center mt-5">
-      <h6 className="text-primary font-bold">Add a review</h6>
-      <form onSubmit={handleSubmit}>
+      <div className="flex justify-between">
+        <h6 className="text-primary font-bold">Add a review</h6>
+        <Checkbox
+          color="secondary"
+          checked={anonymous}
+          onChange={handleAnonymousChange}
+        >
+          Anonymous
+        </Checkbox>
+      </div>
+      <form onSubmit={on}>
         <div className="grid grid-cols-4 gap-4">
           {categories.map((category) => (
             <div key={category} className="flex flex-col justify-between">
@@ -42,29 +51,27 @@ function AddReview({ categories }: AddReviewProps) {
           ))}
         </div>
         <div className="flex flex-col gap-5 mt-10">
-          <div className="flex gap-5">
-            <Input
-              placeholder="Your name"
-              name="name"
-              value={name}
-              aria-label="name"
-              aria-labelledby="name"
-              onChange={(e) => setName(e.target.value)}
-            />
-            <label htmlFor="email" hidden></label>
-            <Input
-              placeholder="Email address"
-              name="email"
-              value={email}
-              aria-label="email"
-              aria-labelledby="email"
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
+          {!anonymous && (
+            <div className="flex gap-5">
+              <Input
+                placeholder="Your name"
+                name="name"
+                value={name}
+                aria-label="name"
+                onChange={(e) => setName(e.target.value)}
+              />
+              <Input
+                placeholder="Email address"
+                name="email"
+                value={email}
+                aria-label="email"
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+          )}
           <Textarea
             placeholder="Your review"
             aria-label="review"
-            aria-labelledby="review"
             size="lg"
             value={reviewText}
             onChange={(e) => setReviewText(e.target.value)}

@@ -8,77 +8,71 @@ datasource db {
 }
 
 model User {
-  id       String   @id @default(cuid()) @map("_id")
-  email    String   @unique
-  password String
-  image    String?
+  id        String   @id @default(cuid()) @map("_id")
+  email     String   @unique
+  image     String?
+  name      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Tour {
-  id          String   @id @default(cuid()) @map("_id")
-  image       String
-  name        String
-  country     String
-  city        String
-  latitude    Float
-  longitude   Float
-  price       Float
-  maxGroupSize Int
-  minAge      Int
-  initialDate DateTime
-  finalDate   DateTime
-  initialRatingAverage Float
-  duration    String
-
-  reviews     Review[] 
-  categories  CategoriesOnTour[]
-
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                   String             @id @default(cuid()) @map("_id")
+  image                String
+  name                 String
+  overview             String
+  country              String
+  city                 String
+  continent            String
+  latitude             Float
+  longitude            Float
+  price                Float
+  maxGroupSize         Int
+  minAge               Int
+  initialDate          DateTime
+  finalDate            DateTime
+  initialRatingAverage Float              @default(0)
+  duration             String
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  categories           CategoriesOnTour[]
+  reviews              Review[]
 
   @@index([country, city])
 }
 
 model Category {
-  id          Int @id @default(autoincrement()) @map("_id")
-  name        String @unique
-  tours       CategoriesOnTour[]
+  id    Int                @id @default(autoincrement()) @map("_id")
+  name  String             @unique
+  tours CategoriesOnTour[]
 
   @@index([name])
 }
 
 model CategoriesOnTour {
-  tour        Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
-  tourId      String
-  category    Category @relation(fields: [categoryId], references: [id])
-  categoryId  Int
+  tourId     String
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id])
+  tour       Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
 
   @@id([tourId, categoryId])
 }
 
 model Review {
-  id          Int @id @default(autoincrement()) @map("_id")
-  tour        Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
-  tourId      String
-  name        String
-  email       String
-  comment     String
-  ratings     Rating[]
-  createdAt   DateTime @default(now())
+  id                    Int      @id @default(autoincrement()) @map("_id")
+  tourId                String
+  name                  String
+  email                 String
+  comment               String
+  anonymous             Boolean
+  services              Float    @default(0)
+  prices                Float    @default(0)
+  locations             Float    @default(0)
+  food                  Float    @default(0)
+  amenities             Float    @default(0)
+  roomComfortAndQuality Float    @default(0)
+  createdAt             DateTime @default(now())
+  tour                  Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
 
   @@index([tourId])
-}
-
-model Rating {
-  id          Int @id @default(autoincrement()) @map("_id")
-  review      Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
-  reviewId    Int 
-  services    Float @default(0)
-  prices      Float @default(0)
-  locations   Float @default(0)
-  food        Float @default(0)
-  amenities   Float @default(0)
-  roomComfortAndQuality Float @default(0)
 }

@@ -19,8 +19,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       auth,
       (currentUser: FirebaseUser | null) => {
         if (currentUser) {
-          const { uid, email, displayName } = currentUser;
-          setUser({ uid, email, displayName });
+          const { uid, email, displayName, photoURL } = currentUser;
+          setUser({ uid, email, displayName, photoURL });
         } else {
           setUser(null);
         }

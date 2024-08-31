@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Header from "../../components/Header";
 import Hero from "./Hero";
 import SearchBox from "./Aside/Search";
@@ -13,8 +13,35 @@ import {
 import SortButton from "../../components/SortButton";
 import Card from "../../components/Card";
 import Footer from "../Home/Footer";
+import { TourResponse } from "@Types/Tour";
+import API from "@Services/API";
+import axios from "axios";
 
 function TourPackage() {
+  const [tours, setTours] = useState<TourResponse[]>([]);
+  const [search, setSearch] = useState<string>("");
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const fetchTours = async () => {
+      try {
+        const response = await axios.get<TourResponse[]>(
+          `${import.meta.env.VITE_API_BASE_URL}/tours`
+        );
+        setTours(response.data);
+      } catch (error) {
+        console.error("Error fetching tours:", error);
+      }
+    };
+    fetchTours();
+    document.title = "Tour Package";
+  }, []);
+
+  // Função para filtrar os tours com base na busca
+  const filteredTours = tours.filter((tour) =>
+    tour.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <>
       <Header />
@@ -24,7 +51,12 @@ function TourPackage() {
           <main className="w-full h-[2008px] flex flex-col items-center justify-center gap-5">
             <div className="flex flex-row gap-10">
               <aside className="w-[271px] h-[1694px] flex flex-col gap-5">
-                <SearchBox />
+                <SearchBox
+                  ref={searchInputRef}
+                  placeholder="Type anything..."
+                  onChange={setSearch}
+                  value={search}
+                />
                 <SliderFilter />
                 <div className="p-7 bg-[#F7F8FA]">
                   <h6 className="text-primary font-bold text-lg">Categories</h6>
@@ -110,7 +142,7 @@ function TourPackage() {
               </aside>
               <main>
                 <div className="flex flex-row justify-between items-center">
-                  <span>16 Tours</span>
+                  <span>{filteredTours.length} Tours</span>
                   <div className="flex flex-row items-center gap-2">
                     <span>Sort By</span>
                     <SortButton />
@@ -134,69 +166,21 @@ function TourPackage() {
                   </div>
                 </div>
                 <section className="grid grid-cols-3 gap-10 mt-6">
-                  <Card
-                    imageSrc="https://elquarto.com/blog/wp-content/uploads/2022/10/Budapeste.jpg" // Replace with your image source
-                    location="Budapest, Hungary"
-                    title="Wonders of the West Coast & Kimberley"
-                    rating={4.8}
-                    reviewsCount={15}
-                    duration="7 days"
-                    price={520}
-                  />
-                  <Card
-                    imageSrc="https://elquarto.com/blog/wp-content/uploads/2022/10/Budapeste.jpg" // Replace with your image source
-                    location="Budapest, Hungary"
-                    title="Wonders of the West Coast & Kimberley"
-                    rating={4.8}
-                    reviewsCount={15}
-                    duration="7 days"
-                    price={520}
-                  />
-                  <Card
-                    imageSrc="https://elquarto.com/blog/wp-content/uploads/2022/10/Budapeste.jpg" // Replace with your image source
-                    location="Budapest, Hungary"
-                    title="Wonders of the West Coast & Kimberley"
-                    rating={4.8}
-                    reviewsCount={15}
-                    duration="7 days"
-                    price={520}
-                  />
-                  <Card
-                    imageSrc="https://elquarto.com/blog/wp-content/uploads/2022/10/Budapeste.jpg" // Replace with your image source
-                    location="Budapest, Hungary"
-                    title="Wonders of the West Coast & Kimberley"
-                    rating={4.8}
-                    reviewsCount={15}
-                    duration="7 days"
-                    price={520}
-                  />
-                  <Card
-                    imageSrc="https://elquarto.com/blog/wp-content/uploads/2022/10/Budapeste.jpg" // Replace with your image source
-                    location="Budapest, Hungary"
-                    title="Wonders of the West Coast & Kimberley"
-                    rating={4.8}
-                    reviewsCount={15}
-                    duration="7 days"
-                    price={520}
-                  />
-                  <Card
-                    imageSrc="https://elquarto.com/blog/wp-content/uploads/2022/10/Budapeste.jpg" // Replace with your image source
-                    location="Budapest, Hungary"
-                    title="Wonders of the West Coast & Kimberley"
-                    rating={4.8}
-                    reviewsCount={15}
-                    duration="7 days"
-                    price={520}
-                  />
-                  <Card
-                    imageSrc="https://elquarto.com/blog/wp-content/uploads/2022/10/Budapeste.jpg" // Replace with your image source
-                    location="Budapest, Hungary"
-                    title="Wonders of the West Coast & Kimberley"
-                    rating={4.8}
-                    reviewsCount={15}
-                    duration="7 days"
-                    price={520}
-                  />
+                  {filteredTours.map((tour, index) => (
+                    <Card
+                      key={index}
+                      image={tour.image}
+                      city={tour.city}
+                      country={tour.country}
+                      title={tour.name}
+                      rating={tour.initialRatingAverage}
+                      reviewsCount={
+                        tour.reviews.map((review) => review.id).length
+                      }
+                      duration={tour.duration}
+                      price={tour.price}
+                    />
+                  ))}
                   <div className="col-span-3 mx-auto">
                     <Pagination
                       showControls

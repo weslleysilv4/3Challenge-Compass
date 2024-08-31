@@ -3,7 +3,7 @@ import userController from '../controllers/userController'
 
 const router = Router()
 
-router.post('/register', (req: Request, res: Response) => {
+router.post('/signup', (req: Request, res: Response) => {
   return new userController().create(req, res)
 })
 router.get('/users', (req: Request, res: Response) => {

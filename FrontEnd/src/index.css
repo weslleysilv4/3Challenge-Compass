@@ -18,6 +18,10 @@
     transform: scale(1);
   }
 }
+small {
+  font-size: 0.8rem;
+  color: #fc5056;
+}
 .heart-pulse {
   animation: pulse 0.3s ease-in-out;
 }
