@@ -6,7 +6,7 @@ import { AuthContext } from "@Contexts/Auth";
 import { faImage } from "@fortawesome/free-regular-svg-icons";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Checkbox, Input, Select, SelectItem } from "@nextui-org/react";
+import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import Footer from "@Pages/Home/Footer";
 import {
   Heart,
@@ -19,21 +19,21 @@ import {
 import { TourResponse, TourProps } from "@Types/Tour";
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
+import { set } from "react-hook-form";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import { useParams } from "react-router-dom";
 
 function TourDetails() {
-  const { user } = useContext(AuthContext);
   const [tour, setTour] = useState<TourProps>();
+  const [adultTickets, setAdultTickets] = useState(0);
+  const [kidTickets, setKidTickets] = useState(0);
+  const [childTickets, setChildTickets] = useState(0);
+  const [diary, setDiary] = useState(1);
+  const [total, setTotal] = useState(0);
+
+  const { user } = useContext(AuthContext);
   const { id } = useParams();
-  const categories = [
-    "Services",
-    "Locations",
-    "Amenities",
-    "twos",
-    "Food",
-    "Room comfort",
-  ];
+
   useEffect(() => {
     const fetchtour = async () => {
       try {
@@ -47,10 +47,46 @@ function TourDetails() {
     };
     fetchtour();
   }, [id]);
+
+  useEffect(() => {
+    setTotal(
+      diary *
+        (adultTickets * (tour?.price ?? 0) +
+          kidTickets * (tour?.price ?? 0) +
+          childTickets * (tour?.price ?? 0)) || 0
+    );
+  }, [diary, adultTickets, kidTickets, childTickets, tour?.price]);
+
   if (!tour) {
     //TODO: Add loading spinner
     return <div>Loading...</div>;
   }
+  const incrementTickets = (type: string) => {
+    if (type === "adult") {
+      setAdultTickets(adultTickets + 1);
+      setTotal(total + tour.price);
+    } else if (type === "kid" && tour.minAge <= 12) {
+      setKidTickets(kidTickets + 1);
+      setTotal(total + tour.price);
+    } else if (type === "child" && tour.minAge <= 3) {
+      setChildTickets(childTickets + 1);
+      setTotal(total + tour.price);
+    }
+  };
+
+  const decrementTickets = (type: string) => {
+    if (type === "adult" && adultTickets > 0) {
+      setAdultTickets(adultTickets - 1);
+      setTotal(total - tour.price);
+    } else if (type === "kid" && kidTickets > 0) {
+      setKidTickets(kidTickets - 1);
+      setTotal(total - tour.price);
+    } else if (type === "child" && childTickets > 0) {
+      setChildTickets(childTickets - 1);
+      setTotal(total - tour.price);
+    }
+  };
+
   return (
     <>
       <Header />
@@ -198,7 +234,8 @@ function TourDetails() {
             <aside className="w-1/4 h-[620px] bg-slate-50">
               <div className="w-full h-full p-10 flex flex-col gap-5">
                 <h2 className="text-md text-primary">
-                  <span className="font-bold text-4xl">$104</span> / per person
+                  <span className="font-bold text-4xl">${tour.price}</span> /
+                  per person
                 </h2>
                 <hr />
                 <div>
@@ -215,83 +252,125 @@ function TourDetails() {
                     placeholder="Select"
                     aria-label="Select option"
                     size="lg"
+                    onChange={(e) => setDiary(parseInt(e.target.value))}
                   >
-                    {Array.from(
-                      { length: parseInt(tour.duration) },
-                      (_, index) => (
-                        <SelectItem key={index + 1} value={`${index + 1}`}>
+                    {Array(parseInt(tour.duration))
+                      .fill(null)
+                      .map((_, index) => (
+                        <SelectItem
+                          key={index + 1}
+                          textValue={`${index + 1} Day${
+                            index + 1 > 1 ? "s" : ""
+                          }`}
+                        >
                           {index + 1} Day{index + 1 > 1 ? "s" : ""}
                         </SelectItem>
-                      )
-                    )}
+                      ))}
                   </Select>
                 </div>
                 <section className="w-full h-full flex flex-col gap-2">
-                  <h6 className="font-bold ">Ticket</h6>
+                  <h6 className="font-bold">Ticket</h6>
                   <div className="flex flex-row items-center justify-between">
                     <p>Adults (18+ years)</p>
-                    <div className="flex items-center">
-                      <Button isIconOnly>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        isIconOnly
+                        variant="bordered"
+                        size="sm"
+                        onClick={() => decrementTickets("adult")}
+                      >
                         <Minus size={22} />
                       </Button>
-                      <Button isIconOnly>0</Button>
-                      <Button isIconOnly>
+                      <Button
+                        isDisabled
+                        isIconOnly
+                        variant="bordered"
+                        size="sm"
+                      >
+                        {adultTickets}
+                      </Button>
+                      <Button
+                        isIconOnly
+                        variant="bordered"
+                        size="sm"
+                        onClick={() => incrementTickets("adult")}
+                      >
                         <Plus size={22} />
                       </Button>
                     </div>
                   </div>
                   <div className="flex flex-row items-center justify-between">
                     <p>Kids (12+ years)</p>
-                    {tour.minAge <= 12 ? (
-                      <div className="flex items-center">
-                        <Button isIconOnly>
-                          <Minus size={22} />
-                        </Button>
-                        <Button isIconOnly>0</Button>
-                        <Button isIconOnly>
-                          <Plus size={22} />
-                        </Button>
-                      </div>
-                    ) : (
-                      <div className="flex items-center">
-                        <Button isIconOnly isDisabled>
-                          <Minus size={22} />
-                        </Button>
-                        <Button isIconOnly isDisabled>
-                          0
-                        </Button>
-                        <Button isIconOnly isDisabled>
-                          <Plus size={22} />
-                        </Button>
-                      </div>
-                    )}
+                    <div className="flex items-center gap-1">
+                      <Button
+                        isIconOnly
+                        variant="bordered"
+                        size="sm"
+                        onClick={() => decrementTickets("kid")}
+                        isDisabled={tour.minAge > 12}
+                      >
+                        <Minus size={22} />
+                      </Button>
+                      <Button
+                        isDisabled
+                        isIconOnly
+                        variant="bordered"
+                        size="sm"
+                      >
+                        {kidTickets}
+                      </Button>
+                      <Button
+                        isIconOnly
+                        variant="bordered"
+                        size="sm"
+                        onClick={() => incrementTickets("kid")}
+                        isDisabled={tour.minAge > 12}
+                      >
+                        <Plus size={22} />
+                      </Button>
+                    </div>
                   </div>
                   <div className="flex flex-row items-center justify-between">
                     <p>Children (3+ years)</p>
-                    {tour.minAge <= 3 ? (
-                      <div className="flex items-center">
-                        <Button isIconOnly>
-                          <Minus size={22} />
-                        </Button>
-                        <Button isIconOnly>0</Button>
-                        <Button isIconOnly>
-                          <Plus size={22} />
-                        </Button>
-                      </div>
-                    ) : (
-                      <div className="flex items-center">
-                        <Button isIconOnly isDisabled>
-                          <Minus size={22} />
-                        </Button>
-                        <Button isIconOnly isDisabled>
-                          0
-                        </Button>
-                        <Button isIconOnly isDisabled>
-                          <Plus size={22} />
-                        </Button>
-                      </div>
-                    )}
+                    <div className="flex items-center gap-1">
+                      <Button
+                        isIconOnly
+                        onClick={() => decrementTickets("child")}
+                        variant="bordered"
+                        size="sm"
+                        isDisabled={tour.minAge > 3}
+                      >
+                        <Minus size={22} />
+                      </Button>
+                      <Button
+                        isDisabled
+                        isIconOnly
+                        variant="bordered"
+                        size="sm"
+                      >
+                        {childTickets}
+                      </Button>
+                      <Button
+                        isIconOnly
+                        onClick={() => incrementTickets("child")}
+                        isDisabled={tour.minAge > 3}
+                        variant="bordered"
+                        size="sm"
+                      >
+                        <Plus size={22} />
+                      </Button>
+                    </div>
                   </div>
+                  <hr className="my-2" />
+                  <div className="flex justify-between my-3">
+                    <h6 className="font-bold">Total</h6>
+                    <p className="text-secondary font-bold">
+                      ${total.toFixed(2)}
+                    </p>
+                  </div>
+                  <Button size="lg" className="w-full" color="secondary">
+                    Book Now
+                  </Button>
                 </section>
               </div>
             </aside>

@@ -4,7 +4,7 @@ import { CreateTourService } from '../services/Tours/CreateTour'
 import { ListTourService } from '../services/Tours/ListTour'
 import { DeleteTourService } from '../services/Tours/DeleteTour'
 import { UpdateTourService } from '../services/Tours/UpdateTour'
-import { TourSchema } from '../validations/tour.validation'
+
 export const tourClient = new PrismaClient().tour
 
 class tourController {
