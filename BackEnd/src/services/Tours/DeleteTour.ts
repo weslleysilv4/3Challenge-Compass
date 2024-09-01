@@ -8,11 +8,8 @@ class DeleteTourService {
       where: { id },
       include: {
         categories: true,
-        reviews: {
-          include: {
-            ratings: true,
-          },
-        },
+        reviews: true,
+        ratings: true,
       },
     })
 

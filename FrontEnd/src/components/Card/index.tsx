@@ -59,7 +59,7 @@ const Card = ({
         <div className="flex row justify-between items-center mb-2">
           <div>
             <span className="text-white text-xs mr-2 bg-secondary rounded-md p-1 ">
-              <FontAwesomeIcon icon={faStar} /> {rating}
+              <FontAwesomeIcon icon={faStar} /> {rating.toFixed(1)}
             </span>
             <span className="text-primary">
               {reviewsCount} {reviewsCount > 1 ? "reviews" : "review"}

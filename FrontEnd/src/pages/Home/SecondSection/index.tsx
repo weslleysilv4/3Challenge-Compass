@@ -15,9 +15,7 @@ function SecondSection() {
     const fetchTours = async () => {
       try {
         const response = await API.getTours();
-        console.log(response);
         setTours(response.tours);
-        console.log(tours);
       } catch (error) {
         console.error("Error fetching tours:", error);
       }

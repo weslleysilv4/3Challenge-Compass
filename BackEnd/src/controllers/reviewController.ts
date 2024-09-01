@@ -7,44 +7,13 @@ export const reviewClient = new PrismaClient().review
 class ReviewController {
   async createReview(req: Request, res: Response) {
     try {
-      const {
-        anonymous,
-        amenities,
-        comment,
-        email,
-        food,
-        locations,
-        name,
-        prices,
-        roomComfortAndQuality,
-        services,
-        tourId,
-      } = req.body
-      const averageRating = (
-        (services +
-          prices +
-          locations +
-          food +
-          amenities +
-          roomComfortAndQuality) /
-        6
-      ).toFixed(1)
+      const reviewData = req.body
+
       const createReviewService = new ReviewService()
-      const review = await createReviewService.createReview({
-        anonymous,
-        amenities,
-        comment,
-        averageRating: Number(averageRating),
-        email,
-        food,
-        locations,
-        name,
-        prices,
-        roomComfortAndQuality,
-        services,
-        tourId,
-      })
-      return res.status(201).json(review)
+      const { review, rating } = await createReviewService.createReview(
+        reviewData
+      )
+      return res.status(201).json({ review, rating })
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).json({ error: error.name, message: error.message })
@@ -57,6 +26,20 @@ class ReviewController {
     const listReviewsService = new ReviewService()
     try {
       const reviews = await listReviewsService.listReviews()
+      return res.status(200).json(reviews)
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ error: error.name, message: error.message })
+      } else {
+        res.status(400).json({ error: 'Unknown error', message: String(error) })
+      }
+    }
+  }
+  async getReviewsByTourId(req: Request, res: Response) {
+    const { tourId } = req.params
+    const reviewService = new ReviewService()
+    try {
+      const reviews = await reviewService.getReviewsByTourId(tourId)
       return res.status(200).json(reviews)
     } catch (error) {
       if (error instanceof Error) {
@@ -82,4 +65,4 @@ class ReviewController {
   }
 }
 
-export { ReviewController }
+export default ReviewController

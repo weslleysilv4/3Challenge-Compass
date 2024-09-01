@@ -4,84 +4,98 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import { today, getLocalTimeZone } from "@internationalized/date";
+import { DatePicker, Input, Select, SelectItem } from "@nextui-org/react";
+import { Category } from "@Types/Tour";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 function Form() {
+  const [categories, setCategories] = useState<Category[]>([]);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const { data } = await axios.get<Category[]>(
+          `${import.meta.env.VITE_API_BASE_URL}/categories`
+        );
+        setCategories(data);
+      } catch (error) {
+        console.error("Error fetching tours:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
   return (
     <form className="absolute flex gap-6 items-center mx-auto px-6 self-center h-[110px] -bottom-11 bg-white rounded-xl drop-shadow-md">
-      <div className="flex flex-col">
+      <div className="flex flex-col w-1/5">
         <label htmlFor="search" className="text-primary font-secondary">
           Destination
         </label>
-        <div className="flex gap-2 items-center outline-none border-2 border-gray-100 rounded-md h-10 px-4">
-          <FontAwesomeIcon icon={faPaperPlane} className="text-tertiary" />
-          <input
-            type="text"
-            placeholder="Where to go?"
-            className="outline-none"
-          />
-        </div>
+        <Input
+          type="text"
+          isClearable
+          placeholder="Where to go?"
+          className="outline-none"
+          variant="bordered"
+          radius="sm"
+          startContent={
+            <FontAwesomeIcon icon={faPaperPlane} className="text-tertiary" />
+          }
+        />
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col w-1/5">
         <label htmlFor="search" className="text-primary font-secondary">
           Type
         </label>
-        <div className="flex gap-2 items-center outline-none border-2 border-gray-100 rounded-md h-10 px-4">
-          <FontAwesomeIcon icon={faFlag} className="text-tertiary" />
-          <select defaultValue="" className="text-tertiary">
-            <option value="" disabled>
-              Activity
-            </option>
-            <option value="" className="text-primary">
-              Beaches
-            </option>
-            <option value="" className="text-primary">
-              Boat Tours
-            </option>
-            <option value="" className="text-primary">
-              City Tours
-            </option>
-            <option value="" className="text-primary">
-              Food
-            </option>
-            <option value="" className="text-primary">
-              Hiking
-            </option>
-            <option value="" className="text-primary">
-              Honeymoon
-            </option>
-            <option value="" className="text-primary">
-              Museum Tours
-            </option>
-          </select>
-        </div>
+        <Select
+          className="text-tertiary max-w-[250px]"
+          variant="bordered"
+          radius="sm"
+          placeholder="Activity"
+          startContent={
+            <FontAwesomeIcon icon={faFlag} className="text-tertiary" />
+          }
+        >
+          {categories.map((category) => (
+            <SelectItem key={category.id} value={category.id}>
+              {category.name}
+            </SelectItem>
+          ))}
+        </Select>
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col w-1/5">
         <label htmlFor="date" className="text-primary font-secondary">
           When
         </label>
-        <div className="flex gap-2 items-center outline-none border-2 border-gray-100 rounded-md h-10 px-4">
-          <input
-            type="date"
-            id="date"
-            className="outline-none text-gray-300 w-full"
-          />
-        </div>
+        <DatePicker
+          id="date"
+          variant="bordered"
+          className="outline-none text-tertiary"
+          defaultValue={today(getLocalTimeZone()).subtract({ days: 1 })}
+          dateInputClassNames={{ inputWrapper: "rounded-md" }}
+          classNames={{
+            selectorButton: "order-first",
+          }}
+        />
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col w-1/5">
         <label htmlFor="search" className="text-primary font-secondary">
           Guests
         </label>
-        <div className="flex gap-2 items-center outline-none border-2 border-gray-100 rounded-md h-10 px-4">
-          <FontAwesomeIcon icon={faUser} className="text-tertiary" />
-          <input
-            type="number"
-            placeholder="0"
-            className="outline-none"
-            min={0}
-            inputMode="numeric"
-          />
-        </div>
+        <Input
+          type="number"
+          isClearable
+          placeholder="0"
+          className="outline-none"
+          min={0}
+          inputMode="numeric"
+          variant="bordered"
+          radius="sm"
+          startContent={
+            <FontAwesomeIcon icon={faUser} className="text-tertiary" />
+          }
+        />
       </div>
       <button className="bg-secondary rounded-md text-white h-10 px-4">
         Search

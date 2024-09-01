@@ -44,16 +44,24 @@ class ListTourService {
         maxGroupSize: { gte: filters?.maxGroupSize },
       }),
     }
+
     const [tours, total] = await prisma.$transaction([
       prisma.tour.findMany({
         where: whereConditions,
         include: {
           categories: {
-            include: {
-              category: true,
+            select: {
+              category: {
+                select: { name: true },
+              },
             },
           },
-          reviews: true,
+          reviews: {
+            include: {
+              rating: true,
+            },
+          },
+          ratings: true,
           _count: {
             select: { reviews: true },
           },
@@ -66,8 +74,50 @@ class ListTourService {
         where: whereConditions,
       }),
     ])
+
     const totalPages = Math.ceil(total / take)
-    return { totalTours: total, totalPages, tours: tours }
+
+    const toursWithAverageRatings = tours.map((tour) => {
+      const totalRatings = tour.reviews.length
+
+      const averageRatings = tour.reviews.reduce(
+        (acc, review) => {
+          acc.services += review?.rating?.services || 0
+          acc.prices += review?.rating?.prices || 0
+          acc.locations += review?.rating?.locations || 0
+          acc.food += review?.rating?.food || 0
+          acc.amenities += review?.rating?.amenities || 0
+          acc.roomComfortAndQuality +=
+            review?.rating?.roomComfortAndQuality || 0
+          return acc
+        },
+        {
+          services: 0,
+          prices: 0,
+          locations: 0,
+          food: 0,
+          amenities: 0,
+          roomComfortAndQuality: 0,
+        }
+      )
+
+      return {
+        ...tour,
+        averageRating: totalRatings
+          ? {
+              services: averageRatings.services / totalRatings,
+              prices: averageRatings.prices / totalRatings,
+              locations: averageRatings.locations / totalRatings,
+              food: averageRatings.food / totalRatings,
+              amenities: averageRatings.amenities / totalRatings,
+              roomComfortAndQuality:
+                averageRatings.roomComfortAndQuality / totalRatings,
+            }
+          : null,
+      }
+    })
+
+    return { totalTours: total, totalPages, tours: toursWithAverageRatings }
   }
 
   async getTour(id: string) {
@@ -81,7 +131,12 @@ class ListTourService {
             category: true,
           },
         },
-        reviews: true,
+        reviews: {
+          include: {
+            rating: true,
+          },
+        },
+        ratings: true,
         _count: {
           select: { reviews: true },
         },
@@ -92,7 +147,42 @@ class ListTourService {
       throw new Error('Tour not found')
     }
 
-    return tourFound
+    const totalRatings = tourFound.reviews.length
+
+    const averageRatings = tourFound.reviews.reduce(
+      (acc, review) => {
+        acc.services += review?.rating?.services || 0
+        acc.prices += review?.rating?.prices || 0
+        acc.locations += review?.rating?.locations || 0
+        acc.food += review?.rating?.food || 0
+        acc.amenities += review?.rating?.amenities || 0
+        acc.roomComfortAndQuality += review?.rating?.roomComfortAndQuality || 0
+        return acc
+      },
+      {
+        services: 0,
+        prices: 0,
+        locations: 0,
+        food: 0,
+        amenities: 0,
+        roomComfortAndQuality: 0,
+      }
+    )
+
+    return {
+      ...tourFound,
+      averageRating: totalRatings
+        ? {
+            services: averageRatings.services / totalRatings,
+            prices: averageRatings.prices / totalRatings,
+            locations: averageRatings.locations / totalRatings,
+            food: averageRatings.food / totalRatings,
+            amenities: averageRatings.amenities / totalRatings,
+            roomComfortAndQuality:
+              averageRatings.roomComfortAndQuality / totalRatings,
+          }
+        : null,
+    }
   }
 }
 

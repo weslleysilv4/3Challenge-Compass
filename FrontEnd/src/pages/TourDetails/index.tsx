@@ -1,12 +1,20 @@
-import AddReview from "@Components/AddReview";
 import AverageReview from "@Components/AverageReview";
 import Header from "@Components/Header";
+import StarRating from "@Components/StarRating";
 import UserReview from "@Components/UserReview";
 import { AuthContext } from "@Contexts/Auth";
 import { faImage } from "@fortawesome/free-regular-svg-icons";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Input, Select, SelectItem } from "@nextui-org/react";
+import { useReviewForm } from "@Hooks/useForm";
+import {
+  Button,
+  Checkbox,
+  Input,
+  Select,
+  SelectItem,
+  Textarea,
+} from "@nextui-org/react";
 import Footer from "@Pages/Home/Footer";
 import {
   Heart,
@@ -16,10 +24,10 @@ import {
   ShareNetwork,
   VideoCamera,
 } from "@phosphor-icons/react";
-import { TourResponse, TourProps } from "@Types/Tour";
+import { ReviewProps } from "@Schemas/userReview";
+import { Review, TourProps } from "@Types/Tour";
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
-import { set } from "react-hook-form";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import { useParams } from "react-router-dom";
 
@@ -28,23 +36,70 @@ function TourDetails() {
   const [adultTickets, setAdultTickets] = useState(0);
   const [kidTickets, setKidTickets] = useState(0);
   const [childTickets, setChildTickets] = useState(0);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [diary, setDiary] = useState(1);
   const [total, setTotal] = useState(0);
-
+  const [anonymous, setAnonymous] = useState(false);
   const { user } = useContext(AuthContext);
   const { id } = useParams();
+  const { register, handleSubmit, errors, setValue, watch } = useReviewForm({
+    tourId: id,
+    email: user?.email || "",
+    name: user?.displayName || "",
+    comment: "",
+    amenities: 0,
+    food: 0,
+    locations: 0,
+    prices: 0,
+    roomComfortAndQuality: 0,
+    services: 0,
+    anonymous: false,
+    userId: user?.uid || "",
+  });
+
+  const onSubmit = async (data: ReviewProps) => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/reviews`,
+        data
+      );
+      console.log(response);
+      await fetchReviews();
+      await fetchtour();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchtour = async () => {
+    try {
+      const { data } = await axios.get<TourProps>(
+        `${import.meta.env.VITE_API_BASE_URL}/tours/${id}`
+      );
+      setTour(data);
+    } catch (error) {
+      console.error("Error fetching tour:", error);
+    }
+  };
+
+  const fetchReviews = async () => {
+    try {
+      const { data } = await axios.get<Review[]>(
+        `${import.meta.env.VITE_API_BASE_URL}/reviews/${id}`
+      );
+      setReviews(data);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+    }
+  };
+
+  if (user && !anonymous) {
+    setValue("name", user.displayName || "");
+    setValue("email", user.email || "");
+  }
 
   useEffect(() => {
-    const fetchtour = async () => {
-      try {
-        const { data } = await axios.get<TourProps>(
-          `${import.meta.env.VITE_API_BASE_URL}/tours/${id}`
-        );
-        setTour(data);
-      } catch (error) {
-        console.error("Error fetching tour:", error);
-      }
-    };
+    fetchReviews();
     fetchtour();
   }, [id]);
 
@@ -149,7 +204,7 @@ function TourDetails() {
                       <td>{tour.maxGroupSize}</td>
                       <td>{tour.minAge}</td>
                       <td>
-                        {tour?.categories.map((category, index) => (
+                        {tour.categories.map((category, index) => (
                           <span key={index}>
                             {category.category.name}
                             {index < tour.categories.length - 1 && ", "}
@@ -199,36 +254,176 @@ function TourDetails() {
                   Average Reviews
                 </h2>
                 <AverageReview
-                  serviceReview={4}
-                  priceReview={4}
-                  locationReview={2.8}
-                  foodReview={3.5}
-                  amenitiesReview={3.0}
-                  roomReview={4.6}
+                  averageReview={tour.initialRatingAverage}
+                  serviceReview={tour.averageRating?.services || 0}
+                  priceReview={tour.averageRating?.prices || 0}
+                  locationReview={tour.averageRating?.locations || 0}
+                  foodReview={tour.averageRating?.food || 0}
+                  amenitiesReview={tour.averageRating?.amenities || 0}
+                  roomReview={tour.averageRating?.roomComfortAndQuality || 0}
+                  aria-labelledby="average-reviews"
                 />
               </section>
               <section className="w-[99%]">
-                {tour.reviews.length > 0 ? (
-                  <>
+                {tour._count.reviews ? (
+                  <section>
                     <h6 className="text-lg font-bold text-primary my-5">
-                      Showing 1 review
+                      Showing {tour._count.reviews}{" "}
+                      {tour._count.reviews > 1 ? "reviews" : "review"}
                     </h6>
-                    <UserReview
-                      date={new Date(
-                        tour.reviews.map((review) => review.createdAt)[0]
-                      ).toLocaleDateString()}
-                      name={tour.reviews.map((review) => review.name)[0]}
-                      rating={4.8}
-                      image={user?.photoURL || ""}
-                      reviewCounter={tour.reviews.length}
-                      review={tour.reviews.map((review) => review.comment)[0]}
-                    />
-                  </>
+                    {reviews.map((review) => (
+                      <UserReview
+                        key={review.id}
+                        date={new Date(review.createdAt).toUTCString()}
+                        name={review.name}
+                        rating={review.rating.averageRating}
+                        image={review.user.image || review.user.name}
+                        reviewCounter={review.user._count.reviews}
+                        review={review.comment}
+                        isAnonymous={review.anonymous}
+                      />
+                    ))}
+                  </section>
                 ) : (
                   <h6 className="text-lg font-bold text-primary my-5">
-                    No reviews yet, add the first review!
+                    No reviews yet
                   </h6>
                 )}
+                <div className="w-full bg-slate-50 p-5 flex flex-col gap-10 justify-center mt-5">
+                  <div className="flex justify-between">
+                    <h6 className="text-primary font-bold">Add a review</h6>
+                    <Checkbox
+                      color="secondary"
+                      {...register("anonymous")}
+                      defaultSelected={true}
+                      onChange={() => setAnonymous(!anonymous)}
+                      aria-labelledby="Anonymous"
+                      aria-label="Anonymous"
+                    >
+                      Anonymous
+                    </Checkbox>
+                  </div>
+                  <form method="POST" onSubmit={handleSubmit(onSubmit)}>
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="flex flex-col items-start justify-start">
+                        <label htmlFor="services">Services</label>
+                        <StarRating
+                          rating={watch("services", 0)}
+                          onRatingChange={(rating) =>
+                            setValue("services", rating)
+                          }
+                        />
+                        {errors.services && (
+                          <small>{errors.services.message}</small>
+                        )}
+                      </div>
+                      <div className="flex flex-col items-start justify-start">
+                        <label htmlFor="prices">Prices</label>
+                        <StarRating
+                          rating={watch("prices", 0)}
+                          onRatingChange={(rating) =>
+                            setValue("prices", rating)
+                          }
+                        />
+                        {errors.prices && (
+                          <small>{errors.prices.message}</small>
+                        )}
+                      </div>
+                      <div className="flex flex-col items-start justify-start">
+                        <label htmlFor="locations">Locations</label>
+                        <StarRating
+                          rating={watch("locations", 0)}
+                          onRatingChange={(rating) =>
+                            setValue("locations", rating)
+                          }
+                        />
+                        {errors.locations && (
+                          <small>{errors.locations.message}</small>
+                        )}
+                      </div>
+                      <div className="flex flex-col items-start justify-start">
+                        <label htmlFor="food">Food</label>
+                        <StarRating
+                          rating={watch("food", 0)}
+                          onRatingChange={(rating) => setValue("food", rating)}
+                        />
+                        {errors.food && <small>{errors.food.message}</small>}
+                      </div>
+                      <div className="flex flex-col items-start justify-start">
+                        <label htmlFor="amenities">Amenities</label>
+                        <StarRating
+                          rating={watch("amenities", 0)}
+                          onRatingChange={(rating) =>
+                            setValue("amenities", rating)
+                          }
+                        />
+                        {errors.amenities && (
+                          <small>{errors.amenities.message}</small>
+                        )}
+                      </div>
+                      <div className="flex flex-col items-start justify-start">
+                        <label htmlFor="roomComfortAndQuality">
+                          Room Comfort and Quality
+                        </label>
+                        <StarRating
+                          rating={watch("roomComfortAndQuality", 0)}
+                          onRatingChange={(rating) =>
+                            setValue("roomComfortAndQuality", rating)
+                          }
+                        />
+                        {errors.roomComfortAndQuality && (
+                          <small>{errors.roomComfortAndQuality.message}</small>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-5 mt-10">
+                      {!anonymous && (
+                        <div className="flex w-full gap-5">
+                          <div className="flex flex-col w-1/2">
+                            <Input
+                              placeholder="Your name"
+                              aria-label="name"
+                              {...register("name")}
+                              aria-labelledby="name"
+                            />
+                            {errors.name && (
+                              <small>{errors.name.message}</small>
+                            )}
+                          </div>
+                          <div className="flex flex-col w-1/2">
+                            <Input
+                              placeholder="Email address"
+                              aria-label="email"
+                              {...register("email")}
+                              aria-labelledby="email"
+                            />
+                            {errors.email && (
+                              <small>{errors.email.message}</small>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                      <Textarea
+                        placeholder="Your review"
+                        size="lg"
+                        {...register("comment")}
+                        aria-label="comment"
+                      />
+                      {errors.comment && (
+                        <small>{errors.comment.message}</small>
+                      )}
+                    </div>
+                    <Button
+                      color="secondary"
+                      className="rounded-md mt-5"
+                      type="submit"
+                      size="lg"
+                      aria-labelledby="submit-review"
+                    >
+                      Submit review
+                    </Button>
+                  </form>
+                </div>
               </section>
             </main>
             <aside className="w-1/4 h-[620px] bg-slate-50">

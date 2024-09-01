@@ -4,6 +4,7 @@ import { Progress } from "@nextui-org/react";
 import React from "react";
 
 interface AverageReviewProps {
+  averageReview: number;
   serviceReview: number;
   priceReview: number;
   locationReview: number;
@@ -13,6 +14,7 @@ interface AverageReviewProps {
 }
 
 function AverageReview({
+  averageReview,
   serviceReview,
   priceReview,
   locationReview,
@@ -20,19 +22,8 @@ function AverageReview({
   amenitiesReview,
   roomReview,
 }: AverageReviewProps) {
-  const calculateAverage = () => {
-    const total =
-      serviceReview +
-      priceReview +
-      locationReview +
-      foodReview +
-      amenitiesReview +
-      roomReview;
-    return total / 6;
-  };
-
   const getRatingText = () => {
-    const average = calculateAverage();
+    const average = averageReview;
     if (average >= 4) return "Excellent";
     if (average >= 3) return "Good";
     if (average >= 2) return "Fair";
@@ -43,7 +34,7 @@ function AverageReview({
     <div className="w-full h-[260px] p-6 bg-slate-50 flex gap-10 items-center ">
       <main className="bg-secondary w-[180px] h-full flex flex-col items-center justify-center  gap-2">
         <h6 className="text-white text-6xl font-bold">
-          {calculateAverage().toFixed(1)}
+          {averageReview.toFixed(1)}
         </h6>
         <span className="text-base text-white">
           <FontAwesomeIcon icon={faStar} /> {getRatingText()}

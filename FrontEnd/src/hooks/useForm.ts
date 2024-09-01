@@ -11,16 +11,21 @@ export const useLoginForm = () => {
   } = useForm<UserLogin>({
     resolver: zodResolver(userLoginSchema),
   });
+
   return { register, handleSubmit, errors };
 };
 
-export const useReviewForm = () => {
+export const useReviewForm = (defaultValues?: Partial<ReviewProps>) => {
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<ReviewProps>({
+    defaultValues,
     resolver: zodResolver(reviewSchema),
   });
-  return { register, handleSubmit, errors };
+
+  return { register, handleSubmit, setValue, watch, errors };
 };

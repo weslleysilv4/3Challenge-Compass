@@ -28,20 +28,35 @@ export interface TourProps {
   duration: string
   categories?: CategoriesOnTourProps[]
   reviews?: ReviewProps[]
+  ratings?: RatingProps
 }
-
 export interface ReviewProps {
   id?: number
   name: string
   email: string
   comment: string
-  average: number
+  anonymous: boolean
+  averageRating: number
   services: number
   prices: number
   locations: number
   food: number
   amenities: number
   roomComfortAndQuality: number
-  createdAt: Date
-  anonymous: boolean
+  userId: string
+  tourId: string
+  rating: RatingProps
+  createdAt?: Date
+}
+export interface RatingProps {
+  id?: number
+  tourId: string
+  reviewId: number
+  services: number
+  prices: number
+  locations: number
+  food: number
+  amenities: number
+  roomComfortAndQuality: number
+  createdAt?: Date
 }

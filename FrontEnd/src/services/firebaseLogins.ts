@@ -16,9 +16,9 @@ import { getDocs, query, collection, where, addDoc } from "firebase/firestore";
 
 const registerUserToDB = async (
   email: string | null,
-  name: string | null,
   uid: string,
-  image: string | null
+  name?: string | null,
+  image?: string | null
 ) => {
   if (!email || !uid) {
     console.error("Email and UID are required to register a user.");
@@ -27,7 +27,7 @@ const registerUserToDB = async (
 
   try {
     const response = await axios.post(
-      "http://localhost:3001/api/signup",
+      `${import.meta.env.VITE_API_BASE_URL}/signup`,
       { email, id: uid, name, image },
       { headers: { "Content-Type": "application/json" } }
     );
@@ -82,17 +82,17 @@ const signInWithFacebook = async () => {
     const q = query(usersCollection, where("uid", "==", user.uid));
     const docs = await getDocs(q);
     if (docs.empty) {
-      addDoc(usersCollection, {
+      await addDoc(usersCollection, {
         name: user.displayName,
         uid: user.uid,
         email: user.email,
         image: user.photoURL,
       });
       await registerUserToDB(
-        user.displayName,
+        user.email,
         user.uid,
-        user.photoURL,
-        user.email
+        user.displayName,
+        user.photoURL
       );
     }
     return user;
@@ -110,17 +110,17 @@ const signInWithGithub = async () => {
     const q = query(usersCollection, where("uid", "==", user.uid));
     const docs = await getDocs(q);
     if (docs.empty) {
-      addDoc(usersCollection, {
+      await addDoc(usersCollection, {
         name: user.displayName,
         uid: user.uid,
         email: user.email,
         image: user.photoURL,
       });
       await registerUserToDB(
-        user.displayName,
         user.email,
-        user.photoURL,
-        user.uid
+        user.uid,
+        user.displayName,
+        user.photoURL
       );
     }
     return user;
@@ -145,23 +145,26 @@ const registerWithEmailAndPassword = async (
     const q = query(usersCollection, where("uid", "==", user.uid));
     const docs = await getDocs(q);
     if (docs.empty) {
-      addDoc(usersCollection, {
+      await addDoc(usersCollection, {
         uid: user.uid,
         email: user.email,
       });
-      await registerUserToDB(email, user.uid);
+      await registerUserToDB(user.email, user.uid);
     }
     return user;
   } catch (error) {
-    console.log(error);
+    console.error("Error registering with email and password:", error);
+    throw error;
   }
 };
 
 const loginWithEmailAndPassword = async (email: string, password: string) => {
   try {
-    await signInWithEmailAndPassword(auth, email, password);
+    const response = await signInWithEmailAndPassword(auth, email, password);
+    return response.user;
   } catch (error) {
-    return error;
+    console.error("Error logging in with email and password:", error);
+    throw error;
   }
 };
 
@@ -169,7 +172,8 @@ const logout = async () => {
   try {
     await signOut(auth);
   } catch (error) {
-    console.error("Error logging out: ", error);
+    console.error("Error logging out:", error);
+    throw error;
   }
 };
 

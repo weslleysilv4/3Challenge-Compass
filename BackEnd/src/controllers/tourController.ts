@@ -9,47 +9,10 @@ export const tourClient = new PrismaClient().tour
 
 class tourController {
   async create(req: Request, res: Response) {
-    const {
-      name,
-      country,
-      image,
-      overview,
-      continent,
-      city,
-      latitude,
-      longitude,
-      price,
-      maxGroupSize,
-      minAge,
-      initialDate,
-      finalDate,
-      initialRatingAverage,
-      duration,
-      categories,
-      reviews,
-    } = req.body
-    console.log(req.body)
+    const data = req.body
     const createTourService = new CreateTourService()
     try {
-      const tour = await createTourService.execute({
-        name,
-        country,
-        image,
-        overview,
-        continent,
-        city,
-        latitude,
-        longitude,
-        price,
-        maxGroupSize,
-        minAge,
-        initialDate,
-        finalDate,
-        initialRatingAverage,
-        duration,
-        categories,
-        reviews,
-      })
+      const tour = await createTourService.execute(data)
       return res.status(201).json(tour)
     } catch (error) {
       if (error instanceof Error) {

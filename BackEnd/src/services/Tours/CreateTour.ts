@@ -5,7 +5,7 @@ const prisma = new PrismaClient()
 
 export class CreateTourService {
   async execute(data: TourProps) {
-    const { categories, ...tourData } = data
+    const { categories, reviews, ...tourData } = data
 
     const tour = await prisma.tour.create({
       data: {
@@ -18,12 +18,39 @@ export class CreateTourService {
           })),
         },
         reviews: {
-          create: data.reviews,
+          create: reviews?.map((review) => ({
+            ...review,
+            user: {
+              connect: { id: review.userId },
+            },
+            rating: {
+              create: {
+                services: review.services,
+                prices: review.prices,
+                locations: review.locations,
+                food: review.food,
+                amenities: review.amenities,
+                roomComfortAndQuality: review.roomComfortAndQuality,
+                averageRating: review.averageRating,
+                tour: {
+                  connect: { id: review.tourId },
+                },
+              },
+            },
+          })),
         },
       },
       include: {
-        categories: true,
-        reviews: true,
+        categories: {
+          include: {
+            category: true,
+          },
+        },
+        reviews: {
+          include: {
+            rating: true,
+          },
+        },
       },
     })
 

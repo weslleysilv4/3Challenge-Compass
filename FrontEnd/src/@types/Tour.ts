@@ -24,19 +24,36 @@ interface TourProps {
   price: number;
   reviews: Review[];
   categories: CategoryOnTour[];
+  _count: {
+    reviews: number;
+  };
+  ratings: Rating[];
+  averageRating: {
+    services: number;
+    prices: number;
+    locations: number;
+    food: number;
+    amenities: number;
+    roomComfortAndQuality: number;
+  };
 }
 
 interface Review {
-  id: number;
+  id?: number;
+  anonymous: boolean;
   comment: string;
   createdAt: string;
   email: string;
   name: string;
-  ratings: Rating[];
+  tourId: string;
+  user: User;
+  rating: Rating;
+  userId: string;
 }
 
 interface Rating {
   id: number;
+  averageRating: number;
   services: number;
   prices: number;
   locations: number;
@@ -54,6 +71,18 @@ interface CategoryOnTour {
 interface Category {
   id: number;
   name: string;
+}
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  image: string;
+  createdAt: string;
+  updatedAt: string;
+  _count: {
+    reviews: number;
+  };
 }
 
 export type {
