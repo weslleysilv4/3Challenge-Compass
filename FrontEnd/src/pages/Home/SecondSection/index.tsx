@@ -1,31 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Slider from "react-slick";
 import Card from "@Components/Card";
 import Titles from "@Components/Titles";
 import TravelCounters from "@Components/TravelCounters";
-import API from "@Services/API";
-import { TourProps } from "@Types/Tour";
 import { useNavigate } from "react-router-dom";
+import { useAllTourData } from "@Hooks/useTourData";
 
 function SecondSection() {
-  const [tours, setTours] = useState<TourProps[]>([]);
+  const { data } = useAllTourData();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchTours = async () => {
-      try {
-        const response = await API.getTours();
-        setTours(response.tours);
-      } catch (error) {
-        console.error("Error fetching tours:", error);
-      }
-    };
-
-    fetchTours();
-  }, []);
   const handleCardClick = (id: string) => {
     navigate(`/tours/${id}`);
   };
+  useEffect(() => {
+    document.title = "Home | Trisog";
+  }, []);
   return (
     <section>
       <div className="container mx-auto">
@@ -43,7 +33,7 @@ function SecondSection() {
               dots
               autoplay
             >
-              {tours.map((tour) => (
+              {data?.data.tours.map((tour) => (
                 <Card
                   key={tour.id}
                   image={tour.image}

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import Header from "../../components/Header";
+import Header from "@Components/Header";
 import Hero from "./Hero";
 import SearchBox from "./Aside/Search";
 import SliderFilter from "./Aside/SlideFilter";
@@ -10,32 +10,18 @@ import {
   Select,
   SelectItem,
 } from "@nextui-org/react";
-import SortButton from "../../components/SortButton";
-import Card from "../../components/Card";
+import SortButton from "@Components/SortButton";
+import Card from "@Components/Card";
 import Footer from "../Home/Footer";
-import { TourProps, TourResponse } from "@Types/Tour";
-import axios from "axios";
+import { useAllTourData } from "@Hooks/useTourData";
 
 function TourPackage() {
-  const [tours, setTours] = useState<TourProps[]>([]);
-  const [response, setResponse] = useState<TourResponse>();
+  const { data: tourData } = useAllTourData();
   const [search, setSearch] = useState<string>("");
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const fetchTours = async () => {
-      try {
-        const response = await axios.get<TourResponse>(
-          `${import.meta.env.VITE_API_BASE_URL}/tours`
-        );
-        setResponse(response.data);
-        setTours(response.data.tours);
-      } catch (error) {
-        console.error("Error fetching tours:", error);
-      }
-    };
-    fetchTours();
-    document.title = "Tour Package";
+    document.title = "Tour Package | Trisog";
   }, []);
 
   return (
@@ -138,7 +124,7 @@ function TourPackage() {
               </aside>
               <main>
                 <div className="flex flex-row justify-between items-center">
-                  <span>{response?.totalTours} Tours</span>
+                  <span>{tourData?.data.totalTours} Tours</span>
                   <div className="flex flex-row items-center gap-2">
                     <span>Sort By</span>
                     <SortButton />
@@ -162,7 +148,7 @@ function TourPackage() {
                   </div>
                 </div>
                 <section className="grid grid-cols-3 gap-10 mt-6">
-                  {tours.map((tour) => (
+                  {tourData?.data.tours.map((tour) => (
                     <Card
                       key={tour.id}
                       image={tour.image}
@@ -178,7 +164,7 @@ function TourPackage() {
                   <div className="col-span-3 mx-auto">
                     <Pagination
                       showControls
-                      total={response?.totalPages || 1}
+                      total={tourData?.data.totalPages || 0}
                       initialPage={1}
                       radius="full"
                       variant="light"

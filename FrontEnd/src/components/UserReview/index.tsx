@@ -46,7 +46,11 @@ function UserReview({
           <span className="text-white text-xs mr-2 bg-secondary rounded-md p-1 ">
             <FontAwesomeIcon icon={faStar} /> {rating.toFixed(1)}
           </span>
-          <span className="text-primary text-sm">{reviewCounter} reviews</span>
+          {!isAnonymous && (
+            <span className="text-primary text-sm">
+              {reviewCounter} reviews
+            </span>
+          )}
         </div>
         <span className="text-sm text-primary">{review}</span>
       </main>

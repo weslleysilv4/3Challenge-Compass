@@ -6,6 +6,7 @@ import {
   faXTwitter,
 } from "@fortawesome/free-brands-svg-icons";
 import { faPaperPlane } from "@fortawesome/free-regular-svg-icons";
+import { Button, Input } from "@nextui-org/react";
 
 function Footer() {
   return (
@@ -125,25 +126,23 @@ function Footer() {
                 </div>
               </div>
             </aside>
-            <aside className="text-white w-1/4 h-full justify-center flex flex-col gap-5">
+            <aside className="text-white w-1/4 h-full justify-center items-start flex flex-col gap-5">
               <h6 className="font-secondary">Sign up Newsletter</h6>
-              <div className="flex flex-row  items-center justify-start px-4 gap-2 w-[232px] h-[40px] bg-white rounded-md outline-none">
-                <FontAwesomeIcon
-                  icon={faPaperPlane}
-                  className="text-tertiary"
-                />
-                <input
+              <div>
+                {/* // TODO: Make this form functional */}
+                <Input
                   type="text"
-                  placeholder="Your Email..."
-                  className="bg-transparent w-full h-full outline-none text-primary"
+                  isClearable
+                  placeholder="Enter Email..."
+                  size="lg"
+                  variant="flat"
+                  className="outline-none text-tertiary mb-2"
+                  startContent={<FontAwesomeIcon icon={faPaperPlane} />}
                 />
+                <Button type="submit" color="secondary" radius="sm">
+                  Subscribe
+                </Button>
               </div>
-              <button
-                className="bg-secondary text-white w-[106px] h-[40px] rounded-md"
-                type="submit"
-              >
-                Subscribe
-              </button>
               <span className="font-light text-tertiary">
                 2023 Trisog All Right Reserved
               </span>
