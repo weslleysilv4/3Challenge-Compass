@@ -37,12 +37,15 @@ class tourController {
           rating?: string
           guests?: string
           continent?: string
+          startDate?: string
         }) || {}
+
       const formatedFilters = {
         ...filters,
         price: Number(filters.price) || undefined,
         initialRatingAverage: Number(filters.rating) || undefined,
         maxGroupSize: Number(filters.guests) || undefined,
+        startDate: filters.startDate ? new Date(filters.startDate) : undefined,
       }
       const tourServices = new ListTourService()
       const tours = await tourServices.getAll(skip, take, sort, formatedFilters)

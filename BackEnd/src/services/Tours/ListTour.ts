@@ -14,6 +14,7 @@ class ListTourService {
       initialRatingAverage?: number
       continent?: string
       maxGroupSize?: number
+      startDate?: Date
     }
   ) {
     const whereConditions = {
@@ -42,6 +43,9 @@ class ListTourService {
       }),
       ...(filters?.maxGroupSize && {
         maxGroupSize: { gte: filters?.maxGroupSize },
+      }),
+      ...(filters?.startDate && {
+        initialDate: { gte: filters?.startDate },
       }),
     }
 
