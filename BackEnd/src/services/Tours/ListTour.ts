@@ -8,7 +8,8 @@ class ListTourService {
     take: number,
     sort: { [key: string]: 'asc' | 'desc' },
     filters?: {
-      categories?: string
+      destination?: string
+      categories?: number[]
       country?: string
       price?: number
       initialRatingAverage?: number
@@ -22,12 +23,15 @@ class ListTourService {
         categories: {
           some: {
             category: {
-              name: {
-                contains: filters?.categories,
+              id: {
+                in: filters?.categories,
               },
             },
           },
         },
+      }),
+      ...(filters?.destination && {
+        city: { contains: filters?.destination },
       }),
       ...(filters?.country && {
         country: { contains: filters?.country },
@@ -56,7 +60,7 @@ class ListTourService {
           categories: {
             select: {
               category: {
-                select: { name: true },
+                select: { id: true, name: true },
               },
             },
           },

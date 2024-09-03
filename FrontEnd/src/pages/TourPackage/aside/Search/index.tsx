@@ -5,7 +5,7 @@ import React, { forwardRef } from "react";
 interface SearchBoxProps {
   placeholder?: string;
   value: string;
-  onChange: (newValue: string) => void;
+  onChange: () => void;
 }
 
 const SearchBox = forwardRef<HTMLInputElement, SearchBoxProps>((props, ref) => {
@@ -18,7 +18,7 @@ const SearchBox = forwardRef<HTMLInputElement, SearchBoxProps>((props, ref) => {
           type="text"
           placeholder={props.placeholder}
           value={props.value}
-          onChange={(e) => props.onChange(e.target.value)}
+          onChange={props.onChange}
           className="w-full h-full outline-none"
         />
         <FontAwesomeIcon icon={faMagnifyingGlass} />

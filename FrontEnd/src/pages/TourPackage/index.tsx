@@ -1,55 +1,173 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "@Components/Header";
 import Hero from "./Hero";
-import SearchBox from "./Aside/Search";
-import SliderFilter from "./Aside/SlideFilter";
 import {
+  Button,
   Checkbox,
   CheckboxGroup,
+  Input,
   Pagination,
-  Select,
-  SelectItem,
+  Slider,
 } from "@nextui-org/react";
-import SortButton from "@Components/SortButton";
 import Card from "@Components/Card";
 import Footer from "../Home/Footer";
-import { useAllTourData } from "@Hooks/useTourData";
+import { useTourDataByParams } from "@Hooks/useTourData";
+import { useSearchParams } from "react-router-dom";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useAllCategoriesData } from "@Hooks/useCategoriesData";
+import { debounce } from "lodash";
 
 function TourPackage() {
-  const { data: tourData } = useAllTourData();
-  const [search, setSearch] = useState<string>("");
-  const searchInputRef = useRef<HTMLInputElement>(null);
+  const [search, setSearch] = useSearchParams();
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [sliderValue, setSliderValue] = useState<number | number[]>(1000);
+  const { data: tourData } = useTourDataByParams(search);
+  const { data: categorieData } = useAllCategoriesData();
 
   useEffect(() => {
     document.title = "Tour Package | Trisog";
+    if (!search.get("take")) {
+      search.set("take", "9");
+      setSearch(search, { replace: true });
+    }
+
+    if (!search.get("skip")) {
+      search.set("skip", "1");
+      setSearch(search, { replace: true });
+    }
   }, []);
 
+  const onSearchChange = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+    const text = e.target.value;
+    if (text.length === 0) {
+      search.delete("destination");
+      setSearch(search, {
+        replace: true,
+      });
+    } else {
+      search.set("destination", text);
+      setSearch(search, {
+        replace: true,
+      });
+    }
+  }, 500);
+
+  const onSliderChange = (value: number | number[]) => {
+    setSliderValue(value);
+  };
+  const onSubmit = () => {
+    if (sliderValue === 0) {
+      search.delete("price");
+    } else {
+      search.set("price", sliderValue.toString());
+    }
+    setSearch(search, { replace: true });
+  };
+
+  const onCheckBoxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const updatedCategories = e.target.checked
+      ? [...selectedCategories, value]
+      : selectedCategories.filter((category) => category !== value);
+
+    setSelectedCategories(updatedCategories);
+
+    if (updatedCategories.length > 0) {
+      search.set("categories", updatedCategories.join(","));
+    } else {
+      search.delete("categories");
+    }
+
+    setSearch(search, { replace: true });
+  };
+
+  const onRatingChange = (e: string[]) => {
+    const value = e;
+    if (value.length > 0) {
+      search.set("rating", value.map((v) => v).join(","));
+    } else {
+      search.delete("rating");
+    }
+    setSearch(search, { replace: true });
+  };
+
+  const onCountryChange = (e: string[]) => {
+    const value = e;
+    if (value.length === 0) {
+      search.delete("country");
+    } else {
+      search.set("country", value.map((v) => v).join(","));
+    }
+    setSearch(search, { replace: true });
+  };
+  const onPageChange = (page: number) => {
+    search.set("page", page.toString());
+    setSearch(search, { replace: true });
+  };
+  const groupedByContinent = tourData?.tours.reduce((acc, tour) => {
+    if (!acc[tour.continent]) {
+      acc[tour.continent] = new Set();
+    }
+    acc[tour.continent].add(tour.city);
+    return acc;
+  }, {} as Record<string, Set<string>>);
   return (
     <>
       <Header />
       <Hero />
       <section>
         <div className="container mx-auto">
-          <main className="w-full h-[2008px] flex flex-col items-center justify-center gap-5">
-            <div className="flex flex-row gap-10">
-              <aside className="w-[271px] h-[1694px] flex flex-col gap-5">
-                <SearchBox
-                  ref={searchInputRef}
-                  placeholder="Type anything..."
-                  onChange={setSearch}
-                  value={search}
-                />
-                <SliderFilter />
+          <main className="w-full h-[2008px] flex flex-col items-start justify-center gap-5">
+            <div className="flex w-full flex-row gap-10">
+              <aside className="min-w-[264px] h-[1694px] flex flex-col gap-5">
+                <div className="p-7 bg-[#F7F8FA]">
+                  <h6 className="text-primary font-bold text-lg">Search</h6>
+                  <Input
+                    type="text"
+                    placeholder="Type anything..."
+                    variant="flat"
+                    radius="none"
+                    color="default"
+                    onChange={onSearchChange}
+                    endContent={<FontAwesomeIcon icon={faMagnifyingGlass} />}
+                  />
+                </div>
+                <div className="p-7 bg-[#F7F8FA]">
+                  <h6 className="text-primary font-bold text-lg">Filter By</h6>
+                  <div className="flex flex-col gap-2 w-full max-w-md">
+                    <Slider
+                      size="sm"
+                      step={5}
+                      formatOptions={{ style: "currency", currency: "USD" }}
+                      color="secondary"
+                      maxValue={5000}
+                      onChange={onSliderChange}
+                      minValue={0}
+                      defaultValue={sliderValue}
+                      className="max-w-md"
+                    />
+                    <div className="flex justify-between">
+                      <p>${sliderValue}.00</p>
+                      <p className="font-bold">$ 1500.00</p>
+                    </div>
+                  </div>
+                  <Button color="secondary" className="mt-2" onClick={onSubmit}>
+                    Submit
+                  </Button>
+                </div>
                 <div className="p-7 bg-[#F7F8FA]">
                   <h6 className="text-primary font-bold text-lg">Categories</h6>
                   <CheckboxGroup label="Select a category" color="secondary">
-                    <Checkbox value="adventure">Adventure</Checkbox>
-                    <Checkbox value="beaches">Beaches</Checkbox>
-                    <Checkbox value="city-tours">City Tours</Checkbox>
-                    <Checkbox value="food">Food</Checkbox>
-                    <Checkbox value="hiking">Hiking</Checkbox>
-                    <Checkbox value="honeymoon">Honeymoon</Checkbox>
-                    <Checkbox value="museum-tours">Museum Tours</Checkbox>
+                    {categorieData?.map((category) => (
+                      <Checkbox
+                        key={category.id}
+                        value={category.id.toString()}
+                        onChange={onCheckBoxChange}
+                      >
+                        {category.name}
+                      </Checkbox>
+                    ))}
                   </CheckboxGroup>
                 </div>
                 <div className="p-7 bg-[#F7F8FA]">
@@ -57,51 +175,24 @@ function TourPackage() {
                     Destinations
                   </h6>
                   <div className="flex flex-col gap-4 mt-4">
-                    <CheckboxGroup
-                      label="Africa"
-                      classNames={{
-                        label: "text-primary text-md font-bold",
-                      }}
-                      color="secondary"
-                    >
-                      <Checkbox value="marroco">Marroco</Checkbox>
-                      <Checkbox value="tanzania">Tanzania</Checkbox>
-                    </CheckboxGroup>
-                    <CheckboxGroup
-                      label="Americas"
-                      classNames={{
-                        label: "text-primary text-md font-bold",
-                      }}
-                      color="secondary"
-                    >
-                      <Checkbox value="argentina">Argentina</Checkbox>
-                      <Checkbox value="canada">Canada</Checkbox>
-                      <Checkbox value="colombia">Colombia</Checkbox>
-                      <Checkbox value="costa-rica">Costa Rica</Checkbox>
-                    </CheckboxGroup>
-                    <CheckboxGroup
-                      label="Asia"
-                      classNames={{
-                        label: "text-primary text-md font-bold",
-                      }}
-                      color="secondary"
-                    >
-                      <Checkbox value="cambodia">Cambodia</Checkbox>
-                      <Checkbox value="japan">Japan</Checkbox>
-                      <Checkbox value="nepal">Nepal</Checkbox>
-                      <Checkbox value="thailand">Thailand</Checkbox>
-                      <Checkbox value="vietnam">Viet Nam</Checkbox>
-                    </CheckboxGroup>
-                    <CheckboxGroup
-                      label="Europe"
-                      classNames={{
-                        label: "text-primary text-md font-bold",
-                      }}
-                      color="secondary"
-                    >
-                      <Checkbox value="france">France</Checkbox>
-                      <Checkbox value="greece">Greece</Checkbox>
-                    </CheckboxGroup>
+                    {groupedByContinent &&
+                      Object.keys(groupedByContinent).map((continent) => (
+                        <CheckboxGroup
+                          key={continent}
+                          label={continent}
+                          classNames={{
+                            label: "text-primary text-md font-bold",
+                          }}
+                          onChange={onCountryChange}
+                          color="secondary"
+                        >
+                          {[...groupedByContinent[continent]].map((city) => (
+                            <Checkbox key={city} value={city}>
+                              {city}
+                            </Checkbox>
+                          ))}
+                        </CheckboxGroup>
+                      ))}
                   </div>
                 </div>
                 <div className="p-7 bg-[#F7F8FA]">
@@ -112,6 +203,7 @@ function TourPackage() {
                         label: "text-primary text-md font-bold",
                       }}
                       color="secondary"
+                      onChange={onRatingChange}
                     >
                       <Checkbox value="5">5 Stars</Checkbox>
                       <Checkbox value="4">4 Stars & Up</Checkbox>
@@ -122,53 +214,38 @@ function TourPackage() {
                   </div>
                 </div>
               </aside>
-              <main>
-                <div className="flex flex-row justify-between items-center">
-                  <span>{tourData?.data.totalTours} Tours</span>
-                  <div className="flex flex-row items-center gap-2">
-                    <span>Sort By</span>
-                    <SortButton />
-                    <Select
-                      color="secondary"
-                      className="w-[200px]"
-                      placeholder="Filter by"
-                      variant="bordered"
-                      aria-label="Select the filter option"
-                    >
-                      <SelectItem key={"title"} value={"title"}>
-                        Title
-                      </SelectItem>
-                      <SelectItem key={"price"} value={"price"}>
-                        Price
-                      </SelectItem>
-                      <SelectItem key={"rating"} value={"rating"}>
-                        Rating
-                      </SelectItem>
-                    </Select>
-                  </div>
-                </div>
+              <main className="w-full">
                 <section className="grid grid-cols-3 gap-10 mt-6">
-                  {tourData?.data.tours.map((tour) => (
-                    <Card
-                      key={tour.id}
-                      image={tour.image}
-                      city={tour.city}
-                      country={tour.country}
-                      title={tour.name}
-                      rating={tour.initialRatingAverage}
-                      reviewsCount={tour.reviews.length}
-                      duration={tour.duration}
-                      price={tour.price}
-                    />
-                  ))}
+                  {tourData && tourData?.totalTours > 0 ? (
+                    tourData?.tours.map((tour) => (
+                      <Card
+                        key={tour.id}
+                        image={tour.image}
+                        city={tour.city}
+                        country={tour.country}
+                        title={tour.name}
+                        rating={tour.initialRatingAverage}
+                        reviewsCount={tour.reviews.length}
+                        duration={tour.duration}
+                        price={tour.price}
+                      />
+                    ))
+                  ) : (
+                    <div className="col-span-3 mx-auto w-full">
+                      <h1 className="text-center text-primary font-bold text-2xl">
+                        No tours found..
+                      </h1>
+                    </div>
+                  )}
                   <div className="col-span-3 mx-auto">
                     <Pagination
                       showControls
-                      total={tourData?.data.totalPages || 0}
-                      initialPage={1}
+                      total={tourData?.totalPages || 0}
+                      initialPage={Number(search.get("page") || 1)}
                       radius="full"
                       variant="light"
                       color="secondary"
+                      onChange={onPageChange}
                     />
                   </div>
                 </section>

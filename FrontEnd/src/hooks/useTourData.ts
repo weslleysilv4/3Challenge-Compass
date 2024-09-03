@@ -16,6 +16,29 @@ const fetchTourDataById = async (id: string): AxiosPromise<TourProps> => {
   return response;
 };
 
+const fetchTourDataByParams = async (
+  params: URLSearchParams
+): AxiosPromise<TourResponse> => {
+  const response = await axios.get<TourResponse>(
+    `${import.meta.env.VITE_API_BASE_URL}/tours`,
+    {
+      params: {
+        skip: params.get("skip"),
+        page: params.get("page"),
+        limit: params.get("limit"),
+        destination: params.get("destination"),
+        categories: params.get("categories"),
+        date: params.get("date"),
+        country: params.get("country"),
+        maxGroupSize: params.get("guests"),
+        price: params.get("price"),
+        rating: params.get("rating"),
+      },
+    }
+  );
+  return response;
+};
+
 export function useAllTourData() {
   const query = useQuery({
     queryKey: ["tours"],
@@ -31,6 +54,19 @@ export function useTourDataById(id: string) {
   const query = useQuery({
     queryKey: ["tours", id],
     queryFn: () => fetchTourDataById(id),
+    enabled: !!id,
+  });
+  return {
+    ...query,
+    data: query.data?.data,
+  };
+}
+
+export function useTourDataByParams(params: URLSearchParams) {
+  const query = useQuery({
+    queryKey: ["tours", params.toString()],
+    queryFn: () => fetchTourDataByParams(params),
+    enabled: !!params,
   });
   return {
     ...query,

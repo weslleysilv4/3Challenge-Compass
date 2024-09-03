@@ -24,31 +24,43 @@ class tourController {
   }
   async getAll(req: Request, res: Response) {
     try {
-      const skip = Number(req.query.skip) || 0
-      const take = Number(req.query.take) || 9
+      const page = Number(req.query.page) || 1
+      const limit = Number(req.query.limit) || 9
+      const skip = (page - 1) * limit
+      console.log(page, limit, skip)
       const sort = (req.query.sort as { [key: string]: 'asc' | 'desc' }) || {
         name: 'asc',
       }
+
       const filters =
-        (req.query.filter as {
+        (req.query as {
+          destination?: string
           categories?: string
           country?: string
           price?: string
           rating?: string
           guests?: string
           continent?: string
-          startDate?: string
+          date?: string
         }) || {}
 
       const formatedFilters = {
         ...filters,
+        categories: filters.categories
+          ? filters.categories.split(',').map(Number)
+          : undefined,
         price: Number(filters.price) || undefined,
         initialRatingAverage: Number(filters.rating) || undefined,
         maxGroupSize: Number(filters.guests) || undefined,
-        startDate: filters.startDate ? new Date(filters.startDate) : undefined,
+        startDate: filters.date ? new Date(filters.date) : undefined,
       }
       const tourServices = new ListTourService()
-      const tours = await tourServices.getAll(skip, take, sort, formatedFilters)
+      const tours = await tourServices.getAll(
+        skip,
+        limit,
+        sort,
+        formatedFilters
+      )
       res.status(200).json(tours)
     } catch (error) {
       if (error instanceof Error) {

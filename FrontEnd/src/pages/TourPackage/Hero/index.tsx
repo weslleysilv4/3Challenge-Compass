@@ -1,5 +1,5 @@
 import React from "react";
-import Form from "@Components/Form";
+import Search from "@Components/Search";
 import { NavLink } from "react-router-dom";
 
 function Hero() {
@@ -18,7 +18,7 @@ function Hero() {
               </NavLink>
             </li>
           </ul>
-          <Form />
+          <Search />
         </main>
       </div>
     </section>
