@@ -1,8 +1,11 @@
+import Router from "@Routes/Router";
+import { AuthProvider } from "@Contexts/Auth";
+
 function App() {
   return (
-    <>
-      <h1 className="text-4xl text-red-400">Hello Tailwind</h1>
-    </>
+    <AuthProvider>
+      <Router />
+    </AuthProvider>
   );
 }
 

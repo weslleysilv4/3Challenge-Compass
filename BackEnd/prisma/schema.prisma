@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid()) @map("_id")
+  email     String   @unique
+  image     String?
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  reviews   Review[]
+}
+
+model Tour {
+  id                   String             @id @default(cuid()) @map("_id")
+  image                String
+  name                 String
+  overview             String
+  country              Country @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  countryId            String
+  city                 String
+  continent            String
+  latitude             Float
+  longitude            Float
+  price                Float
+  maxGroupSize         Int
+  minAge               Int
+  initialDate          DateTime
+  finalDate            DateTime
+  initialRatingAverage Float              @default(0)
+  duration             String
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  categories           CategoriesOnTour[]
+  reviews              Review[]
+  ratings              Rating[]
+
+}
+
+model Country {
+  id           String @id @default(uuid()) @map("_id")
+  isoCode      String
+  title        String
+  image        String
+  name         String
+  overview     String
+  latitude     Float
+  longitude    Float
+  area         Float
+  timeZone     String
+  language     String
+  region       String 
+  population   Int
+  currency     String
+  timeToTravel String
+  tours        Tour[]
+}
+
+model Category {
+  id    Int                @id @default(autoincrement()) @map("_id")
+  name  String             @unique
+  tours CategoriesOnTour[]
+
+  @@index([name])
+}
+
+model CategoriesOnTour {
+  tourId     String
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id])
+  tour       Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  @@id([tourId, categoryId])
+}
+
+model Review {
+  id        Int      @id @default(autoincrement()) @map("_id")
+  tourId    String
+  userId    String
+  name      String
+  email     String
+  comment   String
+  anonymous Boolean
+  createdAt DateTime @default(now())
+  rating    Rating?
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tour      Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  @@index([tourId])
+  @@index([userId])
+}
+
+model Rating {
+  id                    Int      @id @default(autoincrement()) @map("_id")
+  reviewId              Int      @unique
+  tourId                String
+  averageRating         Float    @default(0)
+  services              Float    @default(0)
+  prices                Float    @default(0)
+  locations             Float    @default(0)
+  food                  Float    @default(0)
+  amenities             Float    @default(0)
+  roomComfortAndQuality Float    @default(0)
+  createdAt             DateTime @default(now())
+  tour                  Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  review                Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+}

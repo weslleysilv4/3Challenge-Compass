@@ -1,3 +1,41 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+  scroll-behavior: smooth;
+}
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+small {
+  font-size: 0.8rem;
+  color: #fc5056;
+}
+.heart-pulse {
+  animation: pulse 0.3s ease-in-out;
+}
+.slick-dots li.slick-active button:before {
+  opacity: 0.75;
+  color: #fc5056;
+}
+.slick-dots li button:before {
+  font-size: 8px;
+}
+nav a.active {
+  font-weight: bold;
+  color: #fc5056;
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
