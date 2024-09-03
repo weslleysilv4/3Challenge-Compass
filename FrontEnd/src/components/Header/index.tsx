@@ -91,7 +91,7 @@ function Header() {
                     <NavLink to="/tours">Tours</NavLink>
                   </li>
                   <li className="hover:text-secondary">
-                    <a href="#">Destination</a>
+                    <NavLink to="/destination">Destination</NavLink>
                   </li>
                   <li className="hover:text-secondary">
                     <a href="#">Blog</a>

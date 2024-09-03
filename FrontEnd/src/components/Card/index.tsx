@@ -40,7 +40,7 @@ const Card = ({
         />
         <button
           onClick={toggleFavorite}
-          className={`absolute top-4 right-2 h-8  ${
+          className={`absolute top-4 right-2 h-8  hover:bg-secondary ${
             isFavorite ? "text-white bg-secondary" : "text-primary bg-white"
           } rounded-full p-2 transition-all hover:text-black`}
         >

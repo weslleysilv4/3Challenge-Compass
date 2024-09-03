@@ -1,6 +1,6 @@
 import React from "react";
-import Titles from "../../../components/Titles";
-import CardGuides from "../../../components/CardGuides";
+import Titles from "@Components/Titles";
+import CardGuides from "@Components/CardGuides";
 
 function SixthSection() {
   return (

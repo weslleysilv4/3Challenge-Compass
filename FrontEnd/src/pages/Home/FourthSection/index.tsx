@@ -2,10 +2,12 @@ import { faCirclePlay, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import Slider from "react-slick";
-import CardTourType from "../../../components/CardTourType";
-import Titles from "../../../components/Titles";
+import CardTourType from "@Components/CardTourType";
+import Titles from "@Components/Titles";
+import { useAllCategoriesData } from "@Hooks/useCategoriesData";
 
 function FourthSection() {
+  const { data } = useAllCategoriesData();
   return (
     <section>
       <div className="container mx-auto">
@@ -76,13 +78,14 @@ function FourthSection() {
               slidesToShow={6}
               arrows={false}
             >
-              <CardTourType label="Adventure" price={250} />
-              <CardTourType label="Adventure" price={250} />
-              <CardTourType label="Adventure" price={250} />
-              <CardTourType label="Adventure" price={250} />
-              <CardTourType label="Adventure" price={250} />
-              <CardTourType label="Adventure" price={250} />
-              <CardTourType label="Adventure" price={250} />
+              {data?.map((category) => (
+                <CardTourType
+                  key={category.id}
+                  label={category.name}
+                  tourCount={category.tourCount}
+                  price={category.lowestPrice || 0}
+                />
+              ))}
             </Slider>
           </div>
         </section>

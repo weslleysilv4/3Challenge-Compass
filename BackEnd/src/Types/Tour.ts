@@ -1,6 +1,10 @@
+import { Country } from '../validations/destination.validation'
+
 export interface CategoryProps {
   id: number
   name: string
+  tourCount: number
+  lowestPrice: number | null
 }
 
 export interface CategoriesOnTourProps {
@@ -15,7 +19,7 @@ export interface TourProps {
   image: string
   overview: string
   continent: string
-  country: string
+  country: Country
   city: string
   latitude: number
   longitude: number
@@ -29,6 +33,7 @@ export interface TourProps {
   categories?: CategoriesOnTourProps[]
   reviews?: ReviewProps[]
   ratings?: RatingProps
+  countryId: string
 }
 export interface ReviewProps {
   id?: number

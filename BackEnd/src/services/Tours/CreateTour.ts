@@ -5,11 +5,16 @@ const prisma = new PrismaClient()
 
 export class CreateTourService {
   async execute(data: TourProps) {
-    const { categories, reviews, ...tourData } = data
+    const { countryId, categories, reviews, ...tourData } = data
 
     const tour = await prisma.tour.create({
       data: {
         ...tourData,
+        country: {
+          connect: {
+            id: countryId,
+          },
+        },
         categories: {
           create: categories?.map((category) => ({
             category: {

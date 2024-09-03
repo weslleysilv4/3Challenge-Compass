@@ -64,6 +64,7 @@ class ListTourService {
               },
             },
           },
+          country: true,
           reviews: {
             include: {
               rating: true,

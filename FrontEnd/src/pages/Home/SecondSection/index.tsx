@@ -38,7 +38,7 @@ function SecondSection() {
                   key={tour.id}
                   image={tour.image}
                   city={tour.city}
-                  country={tour.country}
+                  country={tour.country.name}
                   title={tour.name}
                   rating={tour.initialRatingAverage}
                   reviewsCount={tour.reviews.length}

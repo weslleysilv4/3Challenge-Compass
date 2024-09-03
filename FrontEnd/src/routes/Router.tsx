@@ -5,6 +5,7 @@ import TourDetails from "@Pages/TourDetails";
 import Login from "@Pages/Login";
 import SignUp from "@Pages/Signup";
 import ProtectedRoute from "./ProtectedRoute";
+import Destination from "@Pages/Destination";
 
 function Router() {
   return (
@@ -16,6 +17,8 @@ function Router() {
         <Route element={<ProtectedRoute />}>
           <Route path="/tours" element={<TourPackage />} />
           <Route path="/tours/:id" element={<TourDetails />} />
+          <Route path="/destination" element={<Destination />} />
+          <Route path="/destination/:id" element={<Destination />} />
         </Route>
       </Routes>
     </div>

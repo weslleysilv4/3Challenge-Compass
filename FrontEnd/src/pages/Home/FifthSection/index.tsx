@@ -1,7 +1,7 @@
-import Titles from "../../../components/Titles";
+import Titles from "@Components/Titles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQuoteRight } from "@fortawesome/free-solid-svg-icons";
-import Quote from "../../../components/Quote";
+import Quote from "@Components/Quote";
 import Slider from "react-slick";
 
 function FifthSection() {

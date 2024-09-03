@@ -26,6 +26,7 @@ export const TourSchema = z.object({
   image: z.string().url(),
   name: z.string().min(1),
   country: z.string().min(1),
+  countryId: z.string().min(1),
   city: z.string().min(1),
   continent: z.enum([
     'Africa',

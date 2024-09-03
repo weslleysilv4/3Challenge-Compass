@@ -12,7 +12,7 @@ import {
 import Card from "@Components/Card";
 import Footer from "../Home/Footer";
 import { useTourDataByParams } from "@Hooks/useTourData";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAllCategoriesData } from "@Hooks/useCategoriesData";
@@ -20,6 +20,7 @@ import { debounce } from "lodash";
 
 function TourPackage() {
   const [search, setSearch] = useSearchParams();
+  const navigate = useNavigate();
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sliderValue, setSliderValue] = useState<number | number[]>(1000);
   const { data: tourData } = useTourDataByParams(search);
@@ -64,7 +65,9 @@ function TourPackage() {
     }
     setSearch(search, { replace: true });
   };
-
+  const handleCardClick = (id: string) => {
+    navigate(`/tours/${id}`);
+  };
   const onCheckBoxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     const updatedCategories = e.target.checked
@@ -222,12 +225,13 @@ function TourPackage() {
                         key={tour.id}
                         image={tour.image}
                         city={tour.city}
-                        country={tour.country}
+                        country={tour.country.name}
                         title={tour.name}
                         rating={tour.initialRatingAverage}
                         reviewsCount={tour.reviews.length}
                         duration={tour.duration}
                         price={tour.price}
+                        onClick={() => handleCardClick(tour.id)}
                       />
                     ))
                   ) : (

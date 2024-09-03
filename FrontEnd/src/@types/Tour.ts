@@ -1,3 +1,5 @@
+import { Country } from "./Country";
+
 interface TourResponse {
   totalPages: number;
   totalTours: number;
@@ -10,7 +12,8 @@ interface TourProps {
   overview: string;
   continent: string;
   city: string;
-  country: string;
+  country: Country;
+  countryId: string;
   createdAt: string;
   duration: string;
   finalDate: string;
@@ -71,6 +74,8 @@ interface CategoryOnTour {
 interface Category {
   id: number;
   name: string;
+  tourCount: number;
+  lowestPrice: number | null;
 }
 
 interface User {
