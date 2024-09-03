@@ -1,12 +1,11 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Logo from "../../../components/Logo";
+import Logo from "@Components/Logo";
 import {
   faLinkedin,
   faSquareFacebook,
   faXTwitter,
 } from "@fortawesome/free-brands-svg-icons";
-import { faPaperPlane } from "@fortawesome/free-regular-svg-icons";
-import { Button, Input } from "@nextui-org/react";
+import EmailSubscription from "@Components/EmailSubscription";
 
 function Footer() {
   return (
@@ -128,21 +127,7 @@ function Footer() {
             </aside>
             <aside className="text-white w-1/4 h-full justify-center items-start flex flex-col gap-5">
               <h6 className="font-secondary">Sign up Newsletter</h6>
-              <div>
-                {/* // TODO: Make this form functional */}
-                <Input
-                  type="text"
-                  isClearable
-                  placeholder="Enter Email..."
-                  size="lg"
-                  variant="flat"
-                  className="outline-none text-tertiary mb-2"
-                  startContent={<FontAwesomeIcon icon={faPaperPlane} />}
-                />
-                <Button type="submit" color="secondary" radius="sm">
-                  Subscribe
-                </Button>
-              </div>
+              <EmailSubscription />
               <span className="font-light text-tertiary">
                 2023 Trisog All Right Reserved
               </span>

@@ -6,12 +6,12 @@ const reviewData = async (data: ReviewProps) => {
   return await axios.post(`${import.meta.env.VITE_API_BASE_URL}/reviews`, data);
 };
 
-const useReviewMutate = () => {
+const useReviewMutate = (id: string) => {
   const queryClient = useQueryClient();
   const mutate = useMutation({
     mutationFn: reviewData,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["reviews"] });
+      queryClient.invalidateQueries({ queryKey: ["reviews", id] });
     },
   });
 

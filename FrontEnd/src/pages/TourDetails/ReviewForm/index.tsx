@@ -14,7 +14,7 @@ function ReviewForm({ id }: { id: string }) {
   const [anonymous, setAnonymous] = useState(false);
   const { data: tourData } = useTourDataById(id);
   const { data: reviewData } = useReviewDataById(id);
-  const { mutate } = useReviewMutate();
+  const { mutate } = useReviewMutate(id);
 
   const { register, handleSubmit, errors, setValue, watch } = useReviewForm({
     tourId: id,

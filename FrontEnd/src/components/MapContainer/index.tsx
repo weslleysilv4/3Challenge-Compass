@@ -4,15 +4,16 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 type MapDataProps = {
   latitude: number;
   longitude: number;
+  zoom?: number;
 };
 
-function MapComponent({ latitude, longitude }: MapDataProps) {
+function MapComponent({ latitude, longitude, zoom }: MapDataProps) {
   return (
     <section id="map" className="w-full">
-      <h2 className="font-bold text-2xl text-primary my-5 ">Map</h2>
+      <h2 className="font-bold text-2xl text-primary my-5 ">City Map</h2>
       <MapContainer
         center={[latitude, longitude]}
-        zoom={25}
+        zoom={zoom || 25}
         scrollWheelZoom={false}
         style={{ height: "400px", width: "99%" }}
       >

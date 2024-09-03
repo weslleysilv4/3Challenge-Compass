@@ -6,11 +6,17 @@ import {
   faSortAlphaUp,
 } from "@fortawesome/free-solid-svg-icons";
 
-const SortButton = () => {
+interface SortButtonProps {
+  onClick: (isAscending: boolean) => void; // Adicione onClick com a assinatura correta
+}
+
+const SortButton = ({ onClick }: SortButtonProps) => {
   const [isAscending, setIsAscending] = useState(true);
 
   const toggleSortOrder = () => {
-    setIsAscending(!isAscending);
+    const newSortOrder = !isAscending;
+    setIsAscending(newSortOrder);
+    onClick(newSortOrder); // Passe o novo valor para a função onClick
   };
 
   return (

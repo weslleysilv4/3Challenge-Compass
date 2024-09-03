@@ -30,9 +30,11 @@ const fetchTourDataByParams = async (
         categories: params.get("categories"),
         date: params.get("date"),
         country: params.get("country"),
-        maxGroupSize: params.get("guests"),
+        guests: params.get("guests"),
         price: params.get("price"),
         rating: params.get("rating"),
+        sortField: params.get("sortField"),
+        sortOrder: params.get("sortOrder"),
       },
     }
   );

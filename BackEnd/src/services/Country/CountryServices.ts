@@ -6,7 +6,18 @@ const prismaClient = new PrismaClient()
 
 class CountryService {
   async getCountries() {
-    const countries = await prismaClient.country.findMany()
+    const countries = await prismaClient.country.findMany({
+      include: {
+        tours: {
+          include: {
+            reviews: true,
+            _count: {
+              select: { reviews: true },
+            },
+          },
+        },
+      },
+    })
     if (!countries) {
       throw new Error('No countries found')
     }
@@ -16,6 +27,16 @@ class CountryService {
   async getCountryById(country_id: string) {
     const country = await prismaClient.country.findUnique({
       where: { id: country_id },
+      include: {
+        tours: {
+          include: {
+            reviews: true,
+            _count: {
+              select: { reviews: true },
+            },
+          },
+        },
+      },
     })
     if (!country) {
       throw new Error(`Country with id ${country_id} not found`)
@@ -35,6 +56,7 @@ class CountryService {
       population: country.population(data.isoCode) || 0,
       timeZone: country.timezones(data.isoCode)?.join(' ') || 'Not found',
       timeToTravel: 'May, June, July, August',
+      region: country.region(data.isoCode) || 'Not found',
     }
 
     const result = await prismaClient.country.create({

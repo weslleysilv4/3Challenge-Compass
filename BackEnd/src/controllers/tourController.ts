@@ -28,9 +28,9 @@ class tourController {
       const limit = Number(req.query.limit) || 9
       const skip = (page - 1) * limit
 
-      const sort = (req.query.sort as { [key: string]: 'asc' | 'desc' }) || {
-        name: 'asc',
-      }
+      const sortField = req.query.sortField || 'name'
+      const sortOrder = req.query.sortOrder || 'asc'
+      const sort = { [sortField as string]: sortOrder as 'asc' | 'desc' }
 
       const filters =
         (req.query as {
@@ -50,10 +50,13 @@ class tourController {
           ? filters.categories.split(',').map(Number)
           : undefined,
         price: Number(filters.price) || undefined,
-        initialRatingAverage: Number(filters.rating) || undefined,
+        initialRatingAverage: filters.rating
+          ? filters.rating.split(',').map(Number)
+          : undefined,
         maxGroupSize: Number(filters.guests) || undefined,
         startDate: filters.date ? new Date(filters.date) : undefined,
       }
+
       const tourServices = new ListTourService()
       const tours = await tourServices.getAll(
         skip,

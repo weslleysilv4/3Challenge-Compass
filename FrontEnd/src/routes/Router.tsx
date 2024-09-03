@@ -6,6 +6,7 @@ import Login from "@Pages/Login";
 import SignUp from "@Pages/Signup";
 import ProtectedRoute from "./ProtectedRoute";
 import Destination from "@Pages/Destination";
+import DestinationDetails from "@Pages/DestinationDetails";
 
 function Router() {
   return (
@@ -18,7 +19,7 @@ function Router() {
           <Route path="/tours" element={<TourPackage />} />
           <Route path="/tours/:id" element={<TourDetails />} />
           <Route path="/destination" element={<Destination />} />
-          <Route path="/destination/:id" element={<Destination />} />
+          <Route path="/destination/:id" element={<DestinationDetails />} />
         </Route>
       </Routes>
     </div>

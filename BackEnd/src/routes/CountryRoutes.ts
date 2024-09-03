@@ -11,4 +11,7 @@ router.post('/countries', (req, res) => {
   return new CountryController().createCountry(req, res)
 })
 
+router.get('/countries/:id', (req, res) => {
+  return new CountryController().getCountryById(req, res)
+})
 export default router

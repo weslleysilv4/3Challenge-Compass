@@ -7,6 +7,7 @@ interface BookContainerProps {
   price: number;
   duration: string;
   minAge: number;
+  maxGroupSize: number; // Adicionando maxGroupSize como prop
   onBookNow?: () => void;
 }
 
@@ -14,6 +15,7 @@ function BookContainer({
   price,
   duration,
   minAge,
+  maxGroupSize,
   onBookNow,
 }: BookContainerProps) {
   const [diary, setDiary] = useState(1);
@@ -22,6 +24,8 @@ function BookContainer({
   const [kidTickets, setKidTickets] = useState(0);
   const [childTickets, setChildTickets] = useState(0);
 
+  const totalTickets = adultTickets + kidTickets + childTickets;
+
   useEffect(() => {
     setTotal(
       diary * (adultTickets * price + kidTickets * price + childTickets * price)
@@ -29,6 +33,8 @@ function BookContainer({
   }, [diary, adultTickets, kidTickets, childTickets, price]);
 
   const incrementTickets = (type: string) => {
+    if (totalTickets >= maxGroupSize) return; // Verifica se o total de tickets já atingiu o limite
+
     if (type === "adult") {
       setAdultTickets(adultTickets + 1);
     } else if (type === "kid" && minAge <= 12) {

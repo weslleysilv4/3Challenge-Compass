@@ -17,6 +17,10 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAllCategoriesData } from "@Hooks/useCategoriesData";
 import { debounce } from "lodash";
+import { useDestinationData } from "@Hooks/useDestinationData";
+import Filters from "@Components/Filters";
+
+const CONTINENTS = ["Africa", "Asia", "Europe", "Americas", "Oceania"];
 
 function TourPackage() {
   const [search, setSearch] = useSearchParams();
@@ -25,6 +29,7 @@ function TourPackage() {
   const [sliderValue, setSliderValue] = useState<number | number[]>(1000);
   const { data: tourData } = useTourDataByParams(search);
   const { data: categorieData } = useAllCategoriesData();
+  const { data: destinationData } = useDestinationData();
 
   useEffect(() => {
     document.title = "Tour Package | Trisog";
@@ -108,13 +113,12 @@ function TourPackage() {
     search.set("page", page.toString());
     setSearch(search, { replace: true });
   };
-  const groupedByContinent = tourData?.tours.reduce((acc, tour) => {
-    if (!acc[tour.continent]) {
-      acc[tour.continent] = new Set();
-    }
-    acc[tour.continent].add(tour.city);
-    return acc;
-  }, {} as Record<string, Set<string>>);
+  const handleSortChange = (field: string, ascending: boolean) => {
+    search.set("sortField", field);
+    search.set("sortOrder", ascending ? "asc" : "desc");
+    setSearch(search, { replace: true });
+  };
+
   return (
     <>
       <Header />
@@ -178,24 +182,32 @@ function TourPackage() {
                     Destinations
                   </h6>
                   <div className="flex flex-col gap-4 mt-4">
-                    {groupedByContinent &&
-                      Object.keys(groupedByContinent).map((continent) => (
-                        <CheckboxGroup
-                          key={continent}
-                          label={continent}
-                          classNames={{
-                            label: "text-primary text-md font-bold",
-                          }}
-                          onChange={onCountryChange}
-                          color="secondary"
-                        >
-                          {[...groupedByContinent[continent]].map((city) => (
-                            <Checkbox key={city} value={city}>
-                              {city}
-                            </Checkbox>
-                          ))}
-                        </CheckboxGroup>
-                      ))}
+                    {CONTINENTS.map((continent) => {
+                      const countriesInContinent = destinationData?.filter(
+                        (country) => country.region === continent
+                      );
+
+                      if (countriesInContinent?.length ?? 0 > 0) {
+                        return (
+                          <CheckboxGroup
+                            key={continent}
+                            label={continent}
+                            classNames={{
+                              label: "text-primary text-md font-bold",
+                            }}
+                            onChange={onCountryChange}
+                            color="secondary"
+                          >
+                            {countriesInContinent?.map((country) => (
+                              <Checkbox key={country.id} value={country.name}>
+                                {country.name}
+                              </Checkbox>
+                            ))}
+                          </CheckboxGroup>
+                        );
+                      }
+                      return null;
+                    })}
                   </div>
                 </div>
                 <div className="p-7 bg-[#F7F8FA]">
@@ -217,8 +229,12 @@ function TourPackage() {
                   </div>
                 </div>
               </aside>
-              <main className="w-full">
-                <section className="grid grid-cols-3 gap-10 mt-6">
+              <main className="w-full h-full">
+                <Filters
+                  onSortChange={handleSortChange}
+                  totalTours={tourData?.totalTours || 0}
+                />
+                <section className="grid grid-cols-3 gap-10 mt-6 h">
                   {tourData && tourData?.totalTours > 0 ? (
                     tourData?.tours.map((tour) => (
                       <Card

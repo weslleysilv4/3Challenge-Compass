@@ -1,11 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Hero from "./Hero";
 import Header from "@Components/Header";
 import Footer from "@Pages/Home/Footer";
 import { useDestinationData } from "@Hooks/useDestinationData";
+import { useNavigate } from "react-router-dom";
 
 export default function Destination() {
   const { data } = useDestinationData();
+  const navigate = useNavigate();
+
+  const handleClick = (id: string) => {
+    navigate(`/destination/${id}`);
+  };
+  useEffect(() => {
+    document.title = "Destination | Trisog";
+  }, []);
   return (
     <div>
       <Header />
@@ -16,9 +25,12 @@ export default function Destination() {
             <div className="flex flex-col gap-6">
               <main className="grid grid-rows-2 grid-cols-8 gap-8">
                 {data?.[0] && (
-                  <figure className="col-span-2 relative overflow-hidden shadow-lg">
+                  <figure
+                    className="col-span-2 relative overflow-hidden shadow-lg cursor-pointer h-48"
+                    onClick={() => handleClick(data[0].id)}
+                  >
                     <img
-                      className="w-full h-48 object-cover"
+                      className="w-full h-full object-cover"
                       src={data[0].image}
                       alt={data[0].title}
                     />
@@ -33,9 +45,12 @@ export default function Destination() {
                   </figure>
                 )}
                 {data?.[1] && (
-                  <figure className="col-span-2 relative overflow-hidden shadow-lg">
+                  <figure
+                    className="col-span-2 relative overflow-hidden shadow-lg cursor-pointer h-48"
+                    onClick={() => handleClick(data[1].id)}
+                  >
                     <img
-                      className="w-full h-48 object-cover"
+                      className="w-full h-full object-cover"
                       src={data[1].image}
                       alt={data[1].title}
                     />
@@ -50,9 +65,12 @@ export default function Destination() {
                   </figure>
                 )}
                 {data?.[2] && (
-                  <figure className="col-span-2 relative overflow-hidden shadow-lg">
+                  <figure
+                    className="col-span-2 relative overflow-hidden shadow-lg cursor-pointer h-48"
+                    onClick={() => handleClick(data[2].id)}
+                  >
                     <img
-                      className="w-full h-48 object-cover"
+                      className="w-full h-full object-cover"
                       src={data[2].image}
                       alt={data[2].title}
                     />
@@ -67,7 +85,10 @@ export default function Destination() {
                   </figure>
                 )}
                 {data?.[3] && (
-                  <figure className="col-span-2 row-span-2 relative overflow-hidden shadow-lg">
+                  <figure
+                    className="col-span-2 row-span-2 relative overflow-hidden shadow-lg cursor-pointer h-auto"
+                    onClick={() => handleClick(data[3].id)}
+                  >
                     <img
                       className="w-full h-full object-cover"
                       src={data[3].image}
@@ -75,18 +96,21 @@ export default function Destination() {
                     />
                     <figcaption className="absolute bottom-0 left-0 p-4 text-white">
                       <p className="text-xs">
-                        {data[4].population.toLocaleString()}
+                        {data[3].population.toLocaleString()}
                       </p>
                       <h3 className="font-bold font-secondary text-2xl">
-                        {data[4].title}
+                        {data[3].title}
                       </h3>
                     </figcaption>
                   </figure>
                 )}
                 {data?.[4] && (
-                  <figure className="col-span-3 relative overflow-hidden shadow-lg">
+                  <figure
+                    className="col-span-3 relative overflow-hidden shadow-lg cursor-pointer h-48"
+                    onClick={() => handleClick(data[4].id)}
+                  >
                     <img
-                      className="w-full h-48 object-cover"
+                      className="w-full h-full object-cover"
                       src={data[4].image}
                       alt={data[4].title}
                     />
@@ -101,9 +125,12 @@ export default function Destination() {
                   </figure>
                 )}
                 {data?.[5] && (
-                  <figure className="col-span-3 relative overflow-hidden shadow-lg">
+                  <figure
+                    className="col-span-3 relative overflow-hidden shadow-lg cursor-pointer h-48"
+                    onClick={() => handleClick(data[5].id)}
+                  >
                     <img
-                      className="w-full h-48 object-cover"
+                      className="w-full h-full object-cover"
                       src={data[5].image}
                       alt={data[5].title}
                     />
@@ -120,9 +147,12 @@ export default function Destination() {
               </main>
               <main className="grid grid-rows-2 grid-cols-8 gap-8">
                 {data?.[6] && (
-                  <figure className="col-span-2 row-span-2 relative overflow-hidden shadow-lg">
+                  <figure
+                    className="col-span-2 row-span-2 relative overflow-hidden shadow-lg cursor-pointer h-auto"
+                    onClick={() => handleClick(data[6].id)}
+                  >
                     <img
-                      className="w-full h-48 object-cover"
+                      className="w-full h-full object-cover"
                       src={data[6].image}
                       alt={data[6].title}
                     />
@@ -137,9 +167,12 @@ export default function Destination() {
                   </figure>
                 )}
                 {data?.[7] && (
-                  <figure className="col-span-2 relative overflow-hidden shadow-lg">
+                  <figure
+                    className="col-span-2 relative overflow-hidden shadow-lg cursor-pointer h-48"
+                    onClick={() => handleClick(data[7].id)}
+                  >
                     <img
-                      className="w-full h-48 object-cover"
+                      className="w-full h-full object-cover"
                       src={data[7].image}
                       alt={data[7].title}
                     />
@@ -154,9 +187,12 @@ export default function Destination() {
                   </figure>
                 )}
                 {data?.[8] && (
-                  <figure className="col-span-2 relative overflow-hidden shadow-lg">
+                  <figure
+                    className="col-span-2 relative overflow-hidden shadow-lg cursor-pointer h-48"
+                    onClick={() => handleClick(data[8].id)}
+                  >
                     <img
-                      className="w-full h-48 object-cover"
+                      className="w-full h-full object-cover"
                       src={data[8].image}
                       alt={data[8].title}
                     />
@@ -171,9 +207,12 @@ export default function Destination() {
                   </figure>
                 )}
                 {data?.[9] && (
-                  <figure className="col-span-2 relative overflow-hidden shadow-lg">
+                  <figure
+                    className="col-span-2 relative overflow-hidden shadow-lg cursor-pointer h-48"
+                    onClick={() => handleClick(data[9].id)}
+                  >
                     <img
-                      className="w-full h-48 object-cover"
+                      className="w-full h-full object-cover"
                       src={data[9].image}
                       alt={data[9].title}
                     />
@@ -188,9 +227,12 @@ export default function Destination() {
                   </figure>
                 )}
                 {data?.[10] && (
-                  <figure className="col-span-3 relative overflow-hidden shadow-lg">
+                  <figure
+                    className="col-span-3 relative overflow-hidden shadow-lg cursor-pointer h-48"
+                    onClick={() => handleClick(data[10].id)}
+                  >
                     <img
-                      className="w-full h-48 object-cover"
+                      className="w-full h-full object-cover"
                       src={data[10].image}
                       alt={data[10].title}
                     />
@@ -205,9 +247,12 @@ export default function Destination() {
                   </figure>
                 )}
                 {data?.[11] && (
-                  <figure className="col-span-3 relative overflow-hidden shadow-lg">
+                  <figure
+                    className="col-span-3 relative overflow-hidden shadow-lg cursor-pointer h-48"
+                    onClick={() => handleClick(data[11].id)}
+                  >
                     <img
-                      className="w-full h-48 object-cover"
+                      className="w-full h-full object-cover"
                       src={data[11].image}
                       alt={data[11].title}
                     />

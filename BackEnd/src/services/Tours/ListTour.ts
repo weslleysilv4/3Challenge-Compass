@@ -12,7 +12,7 @@ class ListTourService {
       categories?: number[]
       country?: string
       price?: number
-      initialRatingAverage?: number
+      initialRatingAverage?: number[]
       continent?: string
       maxGroupSize?: number
       startDate?: Date
@@ -34,12 +34,16 @@ class ListTourService {
         city: { contains: filters?.destination },
       }),
       ...(filters?.country && {
-        country: { contains: filters?.country },
+        country: {
+          name: {
+            contains: filters?.country,
+          },
+        },
       }),
       ...(filters?.price && { price: { lte: filters?.price } }),
       ...(filters?.initialRatingAverage && {
         initialRatingAverage: {
-          gte: filters?.initialRatingAverage,
+          gte: Math.min(...filters.initialRatingAverage),
         },
       }),
       ...(filters?.continent && {
@@ -140,6 +144,7 @@ class ListTourService {
             category: true,
           },
         },
+        country: true,
         reviews: {
           include: {
             rating: true,

@@ -16,6 +16,20 @@ export class CountryController {
       }
     }
   }
+  async getCountryById(req: Request, res: Response) {
+    const { id } = req.params
+    try {
+      const getCountryByIdService = new CountryService()
+      const country = await getCountryByIdService.getCountryById(id)
+      return res.status(200).json(country)
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ error: error.name, message: error.message })
+      } else {
+        res.status(400).json({ error: 'Unknown error', message: String(error) })
+      }
+    }
+  }
   async createCountry(req: Request, res: Response) {
     const data = req.body
     try {

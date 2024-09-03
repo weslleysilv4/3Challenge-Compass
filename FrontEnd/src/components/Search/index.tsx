@@ -21,7 +21,7 @@ interface SearchFormValues {
 }
 
 export default function SearchForm() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const {
     register,
     handleSubmit,

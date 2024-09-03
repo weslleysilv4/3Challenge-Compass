@@ -14,6 +14,7 @@ model User {
   name      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  reviews   Review[]
 }
 
 model Tour {
@@ -21,7 +22,8 @@ model Tour {
   image                String
   name                 String
   overview             String
-  country              String
+  country              Country @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  countryId            String
   city                 String
   continent            String
   latitude             Float
@@ -37,8 +39,27 @@ model Tour {
   updatedAt            DateTime           @updatedAt
   categories           CategoriesOnTour[]
   reviews              Review[]
+  ratings              Rating[]
 
-  @@index([country, city])
+}
+
+model Country {
+  id           String @id @default(uuid()) @map("_id")
+  isoCode      String
+  title        String
+  image        String
+  name         String
+  overview     String
+  latitude     Float
+  longitude    Float
+  area         Float
+  timeZone     String
+  language     String
+  region       String 
+  population   Int
+  currency     String
+  timeToTravel String
+  tours        Tour[]
 }
 
 model Category {
@@ -59,12 +80,27 @@ model CategoriesOnTour {
 }
 
 model Review {
+  id        Int      @id @default(autoincrement()) @map("_id")
+  tourId    String
+  userId    String
+  name      String
+  email     String
+  comment   String
+  anonymous Boolean
+  createdAt DateTime @default(now())
+  rating    Rating?
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tour      Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  @@index([tourId])
+  @@index([userId])
+}
+
+model Rating {
   id                    Int      @id @default(autoincrement()) @map("_id")
+  reviewId              Int      @unique
   tourId                String
-  name                  String
-  email                 String
-  comment               String
-  anonymous             Boolean
+  averageRating         Float    @default(0)
   services              Float    @default(0)
   prices                Float    @default(0)
   locations             Float    @default(0)
@@ -73,6 +109,5 @@ model Review {
   roomComfortAndQuality Float    @default(0)
   createdAt             DateTime @default(now())
   tour                  Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
-
-  @@index([tourId])
+  review                Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
 }

@@ -28,7 +28,7 @@ export class CreateTourService {
             user: {
               connect: { id: review.userId },
             },
-            rating: {
+            ratings: {
               create: {
                 services: review.services,
                 prices: review.prices,
