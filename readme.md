@@ -30,6 +30,8 @@ This project includes the following key features:
 - **Testing and Optimization:** Extensive testing was performed to ensure the system works efficiently across different environments and meets all specified requirements. The code was optimized for performance and maintainability.
 
 <div align="center">
+  <img height="100%" src="https://firebasestorage.googleapis.com/v0/b/challenge-compass-d71cc.appspot.com/o/Screenshot_1.png?alt=media&token=a1135acc-42e0-431f-894e-cea6376fc32a" alt="Project Screen">
+  <img height="100%" src="https://firebasestorage.googleapis.com/v0/b/challenge-compass-d71cc.appspot.com/o/Screenshot_2.png?alt=media&token=df2abd76-054e-49c1-b010-ddf26ce231bc" alt="Project Screen">
   <img height="100%" src="https://firebasestorage.googleapis.com/v0/b/challenge-compass-d71cc.appspot.com/o/Untitled(1).png?alt=media&token=284b13dc-73cc-46b6-adb4-0ba7328be2cb" alt="Database Schema Diagram">
 </div>
 
